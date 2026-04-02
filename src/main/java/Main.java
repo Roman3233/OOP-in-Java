@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -5,37 +6,90 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         int n;
-
+        double price = 0.0;  
+        
         // input size
-        do {
-            System.out.print("Enter number of clothes: ");
-            n = scanner.nextInt();
-
-            if (n <= 0) {
-                System.out.println("Error: must be > 0");
+        while(true) {
+            try {
+                System.out.print("Enter the number of clothes: ");
+                n = scanner.nextInt();
+                if (n <= 0) {
+                    System.out.println("Error: number must be => 0");
+                    continue;
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Error: please enter a valid integer");
+                scanner.nextLine(); 
             }
-        } while (n <= 0);
+        }
 
         Clothes[] clothesArray = new Clothes[n];
 
         // fill array
+        scanner.nextLine();
         for (int i = 0; i < n; i++) {
             System.out.println("\nClothes #" + (i + 1));
 
-            System.out.print("Name: ");
-            String name = scanner.next();
+            String name;
+            while (true) {
+                System.out.print("Name: ");
+                name = scanner.nextLine().trim();
+                if (name.isEmpty()) {
+                    System.out.println("Error: name cannot be empty");
+                    continue;
+                }
+                break;
+            }
 
-            System.out.print("Size: ");
-            String size = scanner.next();
+            String size;
+            while (true) {
+                System.out.print("Size: ");
+                size = scanner.nextLine().trim();
+                if (size.isEmpty()) {
+                    System.out.println("Error: size cannot be empty");
+                    continue;
+                }
+                break;
+            }
 
-            System.out.print("Price: ");
-            double price = scanner.nextDouble();
+            while (true) {
+                try {
+                    System.out.print("Price: ");
+                    price = scanner.nextDouble();
+                    if (price <= 0) {
+                        System.out.println("Error: price must be > 0");
+                        continue;
+                    }
+                    scanner.nextLine(); // очищаємо залишок рядка
+                    break;
+                } catch (InputMismatchException e) {
+                    System.out.println("Error: please enter a valid number");
+                    scanner.nextLine();
+                }
+            }
 
-            System.out.print("Color: ");
-            String color = scanner.next();
+            String color;
+            while (true) {
+                System.out.print("Color: ");
+                color = scanner.nextLine().trim();
+                if (color.isEmpty()) {
+                    System.out.println("Error: color cannot be empty");
+                    continue;
+                }
+                break;
+            }
 
-            System.out.print("Material: ");
-            String material = scanner.next();
+            String material;
+            while (true) {
+                System.out.print("Material: ");
+                material = scanner.nextLine().trim();
+                if (material.isEmpty()) {
+                    System.out.println("Error: material cannot be empty");
+                    continue;
+                }
+                break;
+            }
 
             clothesArray[i] = new Clothes(name, size, price, color, material);
         }
@@ -47,5 +101,7 @@ public class Main {
         }
 
         scanner.close();
-    }
+    }   
+
+
 }
