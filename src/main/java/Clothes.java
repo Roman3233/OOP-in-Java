@@ -3,22 +3,26 @@ public class Clothes {
     private String size;
     private double price;
     private String color;
+    private String material;
 
-    // Constructor
-    public Clothes(String name, String size, double price, String color) {
-        this.name = name;
-        this.size = size;
-        this.price = price;
-        this.color = color;
+    public Clothes(String name, String size, double price, String color, String material) {
+        setName(name);
+        setSize(size);
+        setPrice(price);
+        setColor(color);
+        setMaterial(material);
     }
 
-    // Getters
     public String getName() {
         return name;
     }
 
     public String getSize() {
         return size;
+    }
+
+    public String getMaterial() {
+        return material;
     }
 
     public double getPrice() {
@@ -29,34 +33,39 @@ public class Clothes {
         return color;
     }
 
-    // Setters
     public void setName(String name) {
-        this.name = name;
+        this.name = validateTextField(name, "Name");
     }
 
     public void setSize(String size) {
-        this.size = size;
+        this.size = validateTextField(size, "Size");
     }
 
     public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0.");
+        }
         this.price = price;
     }
 
     public void setColor(String color) {
-        this.color = color;
+        this.color = validateTextField(color, "Color");
     }
 
-    // toString
+    public void setMaterial(String material) {
+        this.material = validateTextField(material, "Material");
+    }
+
     @Override
     public String toString() {
         return "Clothes: " +
                 "name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
-                ", color='" + color + '\'';
+                ", color='" + color + '\'' +
+                ", material='" + material + '\'';
     }
 
-    // equals
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -68,5 +77,18 @@ public class Clothes {
                size.equals(other.size) &&
                price == other.price &&
                color.equals(other.color);
+    }
+
+    private String validateTextField(String value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " cannot be null.");
+        }
+
+        String trimmedValue = value.trim();
+        if (trimmedValue.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty.");
+        }
+
+        return trimmedValue;
     }
 }

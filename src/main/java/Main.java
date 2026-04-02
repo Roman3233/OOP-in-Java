@@ -4,45 +4,74 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int n;
-
-        // input size
-        do {
-            System.out.print("Enter number of clothes: ");
-            n = scanner.nextInt();
-
-            if (n <= 0) {
-                System.out.println("Error: must be > 0");
-            }
-        } while (n <= 0);
-
+        int n = readPositiveInt(scanner, "Enter the number of clothes: ");
         Clothes[] clothesArray = new Clothes[n];
 
-        // fill array
         for (int i = 0; i < n; i++) {
             System.out.println("\nClothes #" + (i + 1));
 
-            System.out.print("Name: ");
-            String name = scanner.next();
+            String name = readNonEmptyString(scanner, "Name: ");
+            String size = readNonEmptyString(scanner, "Size: ");
+            double price = readPositiveDouble(scanner, "Price: ");
+            String color = readNonEmptyString(scanner, "Color: ");
+            String material = readNonEmptyString(scanner, "Material: ");
 
-            System.out.print("Size: ");
-            String size = scanner.next();
-
-            System.out.print("Price: ");
-            double price = scanner.nextDouble();
-
-            System.out.print("Color: ");
-            String color = scanner.next();
-
-            clothesArray[i] = new Clothes(name, size, price, color);
+            clothesArray[i] = new Clothes(name, size, price, color, material);
         }
 
-        // output
         System.out.println("\nAll clothes:");
-        for (Clothes c : clothesArray) {
-            System.out.println(c);
+        for (Clothes clothes : clothesArray) {
+            System.out.println(clothes);
         }
 
         scanner.close();
+    }
+
+    private static String readNonEmptyString(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Error: input cannot be empty.");
+                continue;
+            }
+
+            return input;
+        }
+    }
+
+    private static int readPositiveInt(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readNonEmptyString(scanner, prompt);
+
+            try {
+                int value = Integer.parseInt(input);
+                if (value <= 0) {
+                    System.out.println("Error: value must be greater than 0.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: please enter a valid integer.");
+            }
+        }
+    }
+
+    private static double readPositiveDouble(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readNonEmptyString(scanner, prompt);
+
+            try {
+                double value = Double.parseDouble(input);
+                if (value <= 0) {
+                    System.out.println("Error: value must be greater than 0.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: please enter a valid number.");
+            }
+        }
     }
 }
