@@ -5,31 +5,14 @@ public class Clothes {
     private String color;
     private String material;
 
-    // Constructor
-        public Clothes(String name, String size, double price, String color, String material) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        if (size == null || size.isEmpty()) {
-            throw new IllegalArgumentException("Size cannot be null or empty");
-        }
-        if (price <= 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
-        }
-        if (color == null || color.isEmpty()) {
-            throw new IllegalArgumentException("Color cannot be null or empty");
-        }
-        if (material == null || material.isEmpty()) {
-            throw new IllegalArgumentException("Material cannot be null or empty");
-        }
-        this.name = name;
-        this.size = size;
-        this.price = price;
-        this.color = color;
-        this.material = material;
+    public Clothes(String name, String size, double price, String color, String material) {
+        setName(name);
+        setSize(size);
+        setPrice(price);
+        setColor(color);
+        setMaterial(material);
     }
 
-    // Getters
     public String getName() {
         return name;
     }
@@ -50,43 +33,29 @@ public class Clothes {
         return color;
     }
 
-    // Setters
     public void setName(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        }
-        this.name = name;
+        this.name = validateTextField(name, "Name");
     }
 
     public void setSize(String size) {
-        if (size == null || size.isEmpty()) {
-            throw new IllegalArgumentException("Size cannot be null or empty");
-        }
-        this.size = size;
+        this.size = validateTextField(size, "Size");
     }
 
     public void setPrice(double price) {
         if (price <= 0) {
-            throw new IllegalArgumentException("Price cannot be negative");
+            throw new IllegalArgumentException("Price must be greater than 0.");
         }
         this.price = price;
     }
 
     public void setColor(String color) {
-        if (color == null || color.isEmpty()) {
-            throw new IllegalArgumentException("Color cannot be null or empty");
-        }
-        this.color = color;
+        this.color = validateTextField(color, "Color");
     }
 
     public void setMaterial(String material) {
-        if (material == null || material.isEmpty()) {
-            throw new IllegalArgumentException("Material cannot be null or empty");
-        }
-        this.material = material;
+        this.material = validateTextField(material, "Material");
     }
 
-    // toString
     @Override
     public String toString() {
         return "Clothes: " +
@@ -97,7 +66,6 @@ public class Clothes {
                 ", material='" + material + '\'';
     }
 
-    // equals
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -109,5 +77,18 @@ public class Clothes {
                size.equals(other.size) &&
                price == other.price &&
                color.equals(other.color);
+    }
+
+    private String validateTextField(String value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " cannot be null.");
+        }
+
+        String trimmedValue = value.trim();
+        if (trimmedValue.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty.");
+        }
+
+        return trimmedValue;
     }
 }
