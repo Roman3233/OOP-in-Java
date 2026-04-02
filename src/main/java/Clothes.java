@@ -3,13 +3,15 @@ public class Clothes {
     private String size;
     private double price;
     private String color;
+    private String material;
 
     // Constructor
-    public Clothes(String name, String size, double price, String color) {
+    public Clothes(String name, String size, double price, String color, String material) {
         this.name = name;
         this.size = size;
         this.price = price;
         this.color = color;
+        this.material = material;
     }
 
     // Getters
@@ -19,6 +21,10 @@ public class Clothes {
 
     public String getSize() {
         return size;
+    }
+
+    public String getMaterial() {
+        return material;
     }
 
     public double getPrice() {
@@ -46,6 +52,10 @@ public class Clothes {
         this.color = color;
     }
 
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
     // toString
     @Override
     public String toString() {
@@ -53,7 +63,8 @@ public class Clothes {
                 "name='" + name + '\'' +
                 ", size='" + size + '\'' +
                 ", price=" + price +
-                ", color='" + color + '\'';
+                ", color='" + color + '\'' +
+                ", material='" + material + '\'';
     }
 
     // equals

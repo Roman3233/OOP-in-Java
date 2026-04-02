@@ -34,7 +34,10 @@ public class Main {
             System.out.print("Color: ");
             String color = scanner.next();
 
-            clothesArray[i] = new Clothes(name, size, price, color);
+            System.out.print("Material: ");
+            String material = scanner.next();
+
+            clothesArray[i] = new Clothes(name, size, price, color, material);
         }
 
         // output
