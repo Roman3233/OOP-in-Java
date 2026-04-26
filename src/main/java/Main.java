@@ -18,14 +18,20 @@ public class Main {
             shirtsArray[i] = createShirt(scanner);
         }
 
-        System.out.println("\nAll pants:");
+        Clothes[] allClothes = new Clothes[pantsArray.length + shirtsArray.length];
+        int index = 0;
+
         for (Pants pants : pantsArray) {
-            System.out.println(pants);
+            allClothes[index++] = pants;
         }
 
-        System.out.println("\nAll shirts:");
         for (Shirts shirt : shirtsArray) {
-            System.out.println(shirt);
+            allClothes[index++] = shirt;
+        }
+
+        System.out.println("\nAll clothes (polymorphism demonstration):");
+        for (Clothes clothes : allClothes) {
+            System.out.println(clothes.getType() + " -> " + clothes);
         }
 
         scanner.close();

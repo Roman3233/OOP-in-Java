@@ -76,9 +76,11 @@ public abstract class Clothes {
         this.manufacturer = manufacturer;
     }
 
+    public abstract String getType();
+
     @Override
     public String toString() {
-        String base = getClass().getSimpleName() + ": " +
+        String base = getType() + ": " +
                 "name='" + name + '\'' +
                 ", size=" + size +
                 ", price=" + price +

@@ -24,6 +24,11 @@ public class Pants extends Clothes {
     }
 
     @Override
+    public String getType() {
+        return "Pants";
+    }
+
+    @Override
     public String toString() {
         return super.toString() + ", waistSize=" + waistSize;
     }

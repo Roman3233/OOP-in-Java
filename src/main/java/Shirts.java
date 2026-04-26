@@ -24,6 +24,11 @@ public class Shirts extends Clothes {
     }
 
     @Override
+    public String getType() {
+        return "Shirt";
+    }
+
+    @Override
     public String toString() {
         return super.toString() + ", sleeveLength=" + sleeveLength;
     }
