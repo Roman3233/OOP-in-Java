@@ -1,12 +1,13 @@
 public class Clothes {
     private String name;
-    private String size;
+    private Size size;
     private double price;
     private String color;
     private String material;
+    private Manufacturer manufacturer;
     private static int count = 0;
 
-    public Clothes(String name, String size, double price, String color, String material) {
+    public Clothes(String name, Size size, double price, String color, String material) {
         setName(name);
         setSize(size);
         setPrice(price);
@@ -15,12 +16,18 @@ public class Clothes {
         count++;
     }
 
+    public Clothes(String name, Size size, double price, String color, String material, Manufacturer manufacturer) {
+        this(name, size, price, color, material);
+        setManufacturer(manufacturer);
+    }
+
     public Clothes(Clothes obj) {
         this.name = obj.name;
         this.size = obj.size;
         this.price = obj.price;
         this.color = obj.color;
         this.material = obj.material;
+        this.manufacturer = obj.manufacturer;
         count++;
     }
 
@@ -28,7 +35,7 @@ public class Clothes {
         return name;
     }
 
-    public String getSize() {
+    public Size getSize() {
         return size;
     }
 
@@ -44,6 +51,10 @@ public class Clothes {
         return color;
     }
 
+    public Manufacturer getManufacturer() {
+        return manufacturer;
+    }
+
     public static int getCount() {
         return count;
     }
@@ -52,8 +63,11 @@ public class Clothes {
         this.name = validateTextField(name, "Name");
     }
 
-    public void setSize(String size) {
-        this.size = validateTextField(size, "Size");
+    public void setSize(Size size) {
+        if (size == null) {
+            throw new IllegalArgumentException("Size cannot be null.");
+        }
+        this.size = size;
     }
 
     public void setPrice(double price) {
@@ -71,15 +85,27 @@ public class Clothes {
         this.material = validateTextField(material, "Material");
     }
     
+    public void setManufacturer(Manufacturer manufacturer) {
+        if (manufacturer == null) {
+            throw new IllegalArgumentException("Manufacturer cannot be null.");
+        }
+        this.manufacturer = manufacturer;
+    }
 
     @Override
     public String toString() {
-        return "Clothes: " +
+        String base = "Clothes: " +
                 "name='" + name + '\'' +
-                ", size='" + size + '\'' +
+                ", size=" + size +
                 ", price=" + price +
                 ", color='" + color + '\'' +
                 ", material='" + material + '\'';
+
+        if (manufacturer == null) {
+            return base;
+        }
+
+        return base + ", " + manufacturer;
     }
 
     @Override
@@ -90,7 +116,7 @@ public class Clothes {
         Clothes other = (Clothes) obj;
 
         return name.equals(other.name) &&
-               size.equals(other.size) &&
+               size == other.size &&
                price == other.price &&
                color.equals(other.color);
     }

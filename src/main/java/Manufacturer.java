@@ -1,5 +1,4 @@
 import java.time.Year;
-
 public class Manufacturer {
     private String name;
     private String country;
@@ -9,6 +8,15 @@ public class Manufacturer {
         setName(name);
         setCountry(country);
         setFoundedYear(foundedYear);
+    }
+
+    public Manufacturer(Manufacturer other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Manufacturer cannot be null.");
+        }
+        this.name = other.name;
+        this.country = other.country;
+        this.foundedYear = other.foundedYear;
     }
 
     public String getName() {
@@ -33,22 +41,31 @@ public class Manufacturer {
 
     public void setFoundedYear(int foundedYear) {
         int currentYear = Year.now().getValue();
-        if (foundedYear <= 0) {
-            throw new IllegalArgumentException("Founded year must be greater than 0.");
-        }
-        if (foundedYear > currentYear) {
-            throw new IllegalArgumentException("Founded year cannot be in the future.");
+        if (foundedYear <= 0 || foundedYear > currentYear) {
+            throw new IllegalArgumentException("Founded year must be between 1 and " + currentYear + ".");
         }
         this.foundedYear = foundedYear;
+    }
+
+    @Override
+    public String toString() {
+        return "Manufacturer: " +
+                "name='" + name + '\'' +
+                ", country='" + country + '\'' +
+                ", foundedYear=" + foundedYear;
     }
 
     private String validateTextField(String value, String fieldName) {
         if (value == null) {
             throw new IllegalArgumentException(fieldName + " cannot be null.");
         }
-        if (value.trim().isEmpty()) {
+
+        String trimmedValue = value.trim();
+        if (trimmedValue.isEmpty()) {
             throw new IllegalArgumentException(fieldName + " cannot be empty.");
         }
-        return value.trim();
+
+        return trimmedValue;
     }
+
 }

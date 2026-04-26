@@ -11,15 +11,23 @@ public class Main {
             System.out.println("\nClothes #" + (i + 1));
 
             String name = readNonEmptyString(scanner, "Name: ");
-            String size = readNonEmptyString(scanner, "Size: ");
+            Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
             double price = readPositiveDouble(scanner, "Price: ");
             String color = readNonEmptyString(scanner, "Color: ");
             String material = readNonEmptyString(scanner, "Material: ");
 
-            clothesArray[i] = new Clothes(name, size, price, color, material);
+            Clothes clothes = new Clothes(name, size, price, color, material);
+
+            System.out.println("Manufacturer for clothes #" + (i + 1));
+            String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
+            String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
+            int foundedYear = readYear(scanner, "Manufacturer founded year: ");
+
+            clothes.setManufacturer(new Manufacturer(manufacturerName, manufacturerCountry, foundedYear));
+            clothesArray[i] = clothes;
         }
 
-        System.out.println("\nAll clothes:");
+        System.out.println("\nAll clothes (with manufacturers):");
         for (Clothes clothes : clothesArray) {
             System.out.println(clothes);
         }
@@ -73,6 +81,29 @@ public class Main {
                 return value;
             } catch (NumberFormatException e) {
                 System.out.println("Error: please enter a valid number.");
+            }
+        }
+    }
+
+    private static int readYear(Scanner scanner, String prompt) {
+        int currentYear = java.time.Year.now().getValue();
+        while (true) {
+            int year = readPositiveInt(scanner, prompt);
+            if (year > currentYear) {
+                System.out.println("Error: year cannot be in the future.");
+                continue;
+            }
+            return year;
+        }
+    }
+
+    private static Size readSize(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readNonEmptyString(scanner, prompt);
+            try {
+                return Size.fromString(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
             }
         }
     }
