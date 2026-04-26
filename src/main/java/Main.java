@@ -66,31 +66,28 @@ public class Main {
         String name = readNonEmptyString(scanner, "Name: ");
         Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
         double price = readPositiveDouble(scanner, "Price: ");
-        String color = readNonEmptyString(scanner, "Color: ");
         String material = readNonEmptyString(scanner, "Material: ");
         double waistSize = readPositiveDouble(scanner, "Waist size: ");
         Manufacturer manufacturer = readManufacturer(scanner);
 
-        return new Pants(name, size, price, color, material, manufacturer, waistSize);
+        return new Pants(name, size, price, material, manufacturer, waistSize);
     }
 
     private static Shirts createShirt(Scanner scanner) {
         String name = readNonEmptyString(scanner, "Name: ");
         Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
         double price = readPositiveDouble(scanner, "Price: ");
-        String color = readNonEmptyString(scanner, "Color: ");
         String material = readNonEmptyString(scanner, "Material: ");
         double sleeveLength = readPositiveDouble(scanner, "Sleeve length: ");
         Manufacturer manufacturer = readManufacturer(scanner);
 
-        return new Shirts(name, size, price, color, material, manufacturer, sleeveLength);
+        return new Shirts(name, size, price, material, manufacturer, sleeveLength);
     }
 
     private static Manufacturer readManufacturer(Scanner scanner) {
         String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
         String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
-        int foundedYear = readYear(scanner, "Manufacturer founded year: ");
-        return new Manufacturer(manufacturerName, manufacturerCountry, foundedYear);
+        return new Manufacturer(manufacturerName, manufacturerCountry);
     }
 
     private static String readNonEmptyString(Scanner scanner, String prompt) {
@@ -149,18 +146,6 @@ public class Main {
             } catch (NumberFormatException e) {
                 System.out.println("Error: please enter a valid number.");
             }
-        }
-    }
-
-    private static int readYear(Scanner scanner, String prompt) {
-        int currentYear = java.time.Year.now().getValue();
-        while (true) {
-            int year = readPositiveInt(scanner, prompt);
-            if (year > currentYear) {
-                System.out.println("Error: year cannot be in the future.");
-                continue;
-            }
-            return year;
         }
     }
 

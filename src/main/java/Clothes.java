@@ -2,20 +2,18 @@ public abstract class Clothes {
     private String name;
     private Size size;
     private double price;
-    private String color;
     private String material;
     private Manufacturer manufacturer;
 
-    public Clothes(String name, Size size, double price, String color, String material) {
+    public Clothes(String name, Size size, double price, String material) {
         setName(name);
         setSize(size);
         setPrice(price);
-        setColor(color);
         setMaterial(material);
     }
 
-    public Clothes(String name, Size size, double price, String color, String material, Manufacturer manufacturer) {
-        this(name, size, price, color, material);
+    public Clothes(String name, Size size, double price, String material, Manufacturer manufacturer) {
+        this(name, size, price, material);
         setManufacturer(manufacturer);
     }
 
@@ -29,10 +27,6 @@ public abstract class Clothes {
 
     public double getPrice() {
         return price;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public String getMaterial() {
@@ -61,10 +55,6 @@ public abstract class Clothes {
         this.price = price;
     }
 
-    public void setColor(String color) {
-        this.color = validateTextField(color, "Color");
-    }
-
     public void setMaterial(String material) {
         this.material = validateTextField(material, "Material");
     }
@@ -84,7 +74,6 @@ public abstract class Clothes {
                 "name='" + name + '\'' +
                 ", size=" + size +
                 ", price=" + price +
-                ", color='" + color + '\'' +
                 ", material='" + material + '\'';
 
         if (manufacturer == null) {
@@ -104,7 +93,6 @@ public abstract class Clothes {
         return name.equals(other.name) &&
                 size == other.size &&
                 price == other.price &&
-                color.equals(other.color) &&
                 material.equals(other.material);
     }
 

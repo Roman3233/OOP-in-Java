@@ -1,14 +1,10 @@
-import java.time.Year;
-
 public class Manufacturer {
     private String name;
     private String country;
-    private int foundedYear;
 
-    public Manufacturer(String name, String country, int foundedYear) {
+    public Manufacturer(String name, String country) {
         setName(name);
         setCountry(country);
-        setFoundedYear(foundedYear);
     }
 
     public String getName() {
@@ -19,10 +15,6 @@ public class Manufacturer {
         return country;
     }
 
-    public int getFoundedYear() {
-        return foundedYear;
-    }
-
     public void setName(String name) {
         this.name = validateTextField(name, "Name");
     }
@@ -31,20 +23,11 @@ public class Manufacturer {
         this.country = validateTextField(country, "Country");
     }
 
-    public void setFoundedYear(int foundedYear) {
-        int currentYear = Year.now().getValue();
-        if (foundedYear <= 0 || foundedYear > currentYear) {
-            throw new IllegalArgumentException("Founded year must be between 1 and " + currentYear + ".");
-        }
-        this.foundedYear = foundedYear;
-    }
-
     @Override
     public String toString() {
         return "Manufacturer: " +
                 "name='" + name + '\'' +
-                ", country='" + country + '\'' +
-                ", foundedYear=" + foundedYear;
+                ", country='" + country + '\'';
     }
 
     private String validateTextField(String value, String fieldName) {

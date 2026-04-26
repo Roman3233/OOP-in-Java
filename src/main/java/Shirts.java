@@ -1,14 +1,14 @@
 public class Shirts extends Clothes {
     private double sleeveLength;
 
-    public Shirts(String name, Size size, double price, String color, String material, double sleeveLength) {
-        super(name, size, price, color, material);
+    public Shirts(String name, Size size, double price, String material, double sleeveLength) {
+        super(name, size, price, material);
         setSleeveLength(sleeveLength);
     }
 
-    public Shirts(String name, Size size, double price, String color, String material,
+    public Shirts(String name, Size size, double price, String material,
                   Manufacturer manufacturer, double sleeveLength) {
-        super(name, size, price, color, material, manufacturer);
+        super(name, size, price, material, manufacturer);
         setSleeveLength(sleeveLength);
     }
 

@@ -1,14 +1,14 @@
 public class Pants extends Clothes {
     private double waistSize;
 
-    public Pants(String name, Size size, double price, String color, String material, double waistSize) {
-        super(name, size, price, color, material);
+    public Pants(String name, Size size, double price, String material, double waistSize) {
+        super(name, size, price, material);
         setWaistSize(waistSize);
     }
 
-    public Pants(String name, Size size, double price, String color, String material,
+    public Pants(String name, Size size, double price, String material,
                  Manufacturer manufacturer, double waistSize) {
-        super(name, size, price, color, material, manufacturer);
+        super(name, size, price, material, manufacturer);
         setWaistSize(waistSize);
     }
 
