@@ -1,40 +1,65 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        List<Clothes> clothesList = new ArrayList<>();
 
-        int pantsCount = readNonNegativeInt(scanner, "Enter the number of pants: ");
-        Pants[] pantsArray = new Pants[pantsCount];
-        for (int i = 0; i < pantsCount; i++) {
-            System.out.println("\nPants #" + (i + 1));
-            pantsArray[i] = createPants(scanner);
-        }
+        boolean running = true;
+        while (running) {
+            printMenu();
+            int choice = readMenuChoice(scanner);
 
-        int shirtsCount = readNonNegativeInt(scanner, "Enter the number of shirts: ");
-        Shirts[] shirtsArray = new Shirts[shirtsCount];
-        for (int i = 0; i < shirtsCount; i++) {
-            System.out.println("\nShirt #" + (i + 1));
-            shirtsArray[i] = createShirt(scanner);
-        }
-
-        Clothes[] allClothes = new Clothes[pantsArray.length + shirtsArray.length];
-        int index = 0;
-
-        for (Pants pants : pantsArray) {
-            allClothes[index++] = pants;
-        }
-
-        for (Shirts shirt : shirtsArray) {
-            allClothes[index++] = shirt;
-        }
-
-        System.out.println("\nAll clothes (polymorphism demonstration):");
-        for (Clothes clothes : allClothes) {
-            System.out.println(clothes.getType() + " -> " + clothes);
+            switch (choice) {
+                case 1:
+                    System.out.println("\nCreating pants:");
+                    clothesList.add(createPants(scanner));
+                    System.out.println("Pants added successfully.");
+                    break;
+                case 2:
+                    System.out.println("\nCreating shirt:");
+                    clothesList.add(createShirt(scanner));
+                    System.out.println("Shirt added successfully.");
+                    break;
+                case 3:
+                    printAllClothes(clothesList);
+                    break;
+                case 0:
+                    running = false;
+                    System.out.println("Program finished.");
+                    break;
+                default:
+                    System.out.println("Error: unknown menu option.");
+            }
         }
 
         scanner.close();
+    }
+
+    private static void printMenu() {
+        System.out.println("\nMenu:");
+        System.out.println("1. Create pants");
+        System.out.println("2. Create shirt");
+        System.out.println("3. Show all clothes");
+        System.out.println("0. Exit");
+    }
+
+    private static int readMenuChoice(Scanner scanner) {
+        return readNonNegativeInt(scanner, "Choose an option: ");
+    }
+
+    private static void printAllClothes(List<Clothes> clothesList) {
+        if (clothesList.isEmpty()) {
+            System.out.println("\nThe clothes list is empty.");
+            return;
+        }
+
+        System.out.println("\nAll clothes:");
+        for (Clothes clothes : clothesList) {
+            System.out.println(clothes.getType() + " -> " + clothes);
+        }
     }
 
     private static Pants createPants(Scanner scanner) {
