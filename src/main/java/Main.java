@@ -1,6 +1,14 @@
 import java.util.Scanner;
 
+/**
+ * Консольна точка входу: зчитує дані про одяг з {@link System#in} та виводить створені об'єкти.
+ */
 public class Main {
+    /**
+     * Точка входу програми.
+     *
+     * @param args аргументи командного рядка (не використовуються)
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -37,6 +45,13 @@ public class Main {
         scanner.close();
     }
 
+    /**
+     * Зчитує непорожній рядок з консолі.
+     *
+     * @param scanner сканер вводу
+     * @param prompt  запрошення (prompt) перед зчитуванням
+     * @return непорожній рядок без пробілів на краях (trim)
+     */
     private static String readNonEmptyString(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -51,6 +66,13 @@ public class Main {
         }
     }
 
+    /**
+     * Зчитує додатне ціле число з консолі.
+     *
+     * @param scanner сканер вводу
+     * @param prompt  запрошення (prompt) перед зчитуванням
+     * @return ціле число &gt; 0
+     */
     private static int readPositiveInt(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
@@ -68,6 +90,13 @@ public class Main {
         }
     }
 
+    /**
+     * Зчитує додатне число з плаваючою комою з консолі.
+     *
+     * @param scanner сканер вводу
+     * @param prompt  запрошення (prompt) перед зчитуванням
+     * @return число &gt; 0
+     */
     private static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
@@ -85,6 +114,13 @@ public class Main {
         }
     }
 
+    /**
+     * Зчитує рік, який не може бути в майбутньому.
+     *
+     * @param scanner сканер вводу
+     * @param prompt  запрошення (prompt) перед зчитуванням
+     * @return рік у межах 1..поточний рік (включно)
+     */
     private static int readYear(Scanner scanner, String prompt) {
         int currentYear = java.time.Year.now().getValue();
         while (true) {
@@ -97,6 +133,13 @@ public class Main {
         }
     }
 
+    /**
+     * Зчитує значення {@link Size} з консолі.
+     *
+     * @param scanner сканер вводу
+     * @param prompt  запрошення (prompt) перед зчитуванням
+     * @return зчитаний {@link Size}
+     */
     private static Size readSize(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
