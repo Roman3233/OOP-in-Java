@@ -1,57 +1,104 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * Консольна точка входу: зчитує дані про одяг з {@link System#in} та виводить створені об'єкти.
+ * Консольна точка входу для роботи з об'єктами одягу.
+ * Дозволяє створювати об'єкти похідних класів і переглядати їх в одному списку.
  */
 public class Main {
     /**
-     * Точка входу програми.
+     * Запускає консольне меню програми.
      *
-     * @param args аргументи командного рядка (не використовуються)
+     * @param args аргументи командного рядка
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        List<Clothes> clothesList = new ArrayList<>();
 
-        int n = readPositiveInt(scanner, "Enter the number of clothes: ");
-        Clothes[] clothesArray = new Clothes[n];
+        boolean running = true;
+        while (running) {
+            printMenu();
+            int choice = readMenuChoice(scanner);
 
-        for (int i = 0; i < n; i++) {
-            System.out.println("\nClothes #" + (i + 1));
-
-            String name = readNonEmptyString(scanner, "Name: ");
-            Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
-            double price = readPositiveDouble(scanner, "Price: ");
-            String color = readNonEmptyString(scanner, "Color: ");
-            String material = readNonEmptyString(scanner, "Material: ");
-
-            Clothes clothes = new Clothes(name, size, price, color, material);
-
-            System.out.println("Manufacturer for clothes #" + (i + 1));
-            String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
-            String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
-            int foundedYear = readYear(scanner, "Manufacturer founded year: ");
-
-            clothes.setManufacturer(new Manufacturer(manufacturerName, manufacturerCountry, foundedYear));
-            clothesArray[i] = clothes;
+            switch (choice) {
+                case 1:
+                    System.out.println("\nCreating pants:");
+                    clothesList.add(createPants(scanner));
+                    System.out.println("Pants added successfully.");
+                    break;
+                case 2:
+                    System.out.println("\nCreating shirt:");
+                    clothesList.add(createShirt(scanner));
+                    System.out.println("Shirt added successfully.");
+                    break;
+                case 3:
+                    printAllClothes(clothesList);
+                    break;
+                case 0:
+                    running = false;
+                    System.out.println("Program finished.");
+                    break;
+                default:
+                    System.out.println("Error: unknown menu option.");
+            }
         }
-
-        System.out.println("\nAll clothes (with manufacturers):");
-        for (Clothes clothes : clothesArray) {
-            System.out.println(clothes);
-        }
-
-        System.out.println("\nTotal clothes created: " + Clothes.getCount());
 
         scanner.close();
     }
 
-    /**
-     * Зчитує непорожній рядок з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return непорожній рядок без пробілів на краях (trim)
-     */
+    private static void printMenu() {
+        System.out.println("\nMenu:");
+        System.out.println("1. Create pants");
+        System.out.println("2. Create shirt");
+        System.out.println("3. Show all clothes");
+        System.out.println("0. Exit");
+    }
+
+    private static int readMenuChoice(Scanner scanner) {
+        return readNonNegativeInt(scanner, "Choose an option: ");
+    }
+
+    private static void printAllClothes(List<Clothes> clothesList) {
+        if (clothesList.isEmpty()) {
+            System.out.println("\nThe clothes list is empty.");
+            return;
+        }
+
+        System.out.println("\nAll clothes:");
+        for (Clothes clothes : clothesList) {
+            System.out.println(clothes.getType() + " -> " + clothes);
+        }
+    }
+
+    private static Pants createPants(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        double waistSize = readPositiveDouble(scanner, "Waist size: ");
+        Manufacturer manufacturer = readManufacturer(scanner);
+
+        return new Pants(name, size, price, material, manufacturer, waistSize);
+    }
+
+    private static Shirts createShirt(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        double sleeveLength = readPositiveDouble(scanner, "Sleeve length: ");
+        Manufacturer manufacturer = readManufacturer(scanner);
+
+        return new Shirts(name, size, price, material, manufacturer, sleeveLength);
+    }
+
+    private static Manufacturer readManufacturer(Scanner scanner) {
+        String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
+        String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
+        return new Manufacturer(manufacturerName, manufacturerCountry);
+    }
+
     private static String readNonEmptyString(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -66,21 +113,14 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує додатне ціле число з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return ціле число &gt; 0
-     */
-    private static int readPositiveInt(Scanner scanner, String prompt) {
+    private static int readNonNegativeInt(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
 
             try {
                 int value = Integer.parseInt(input);
-                if (value <= 0) {
-                    System.out.println("Error: value must be greater than 0.");
+                if (value < 0) {
+                    System.out.println("Error: value cannot be negative.");
                     continue;
                 }
                 return value;
@@ -90,13 +130,17 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує додатне число з плаваючою комою з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return число &gt; 0
-     */
+    private static int readPositiveInt(Scanner scanner, String prompt) {
+        while (true) {
+            int value = readNonNegativeInt(scanner, prompt);
+            if (value == 0) {
+                System.out.println("Error: value must be greater than 0.");
+                continue;
+            }
+            return value;
+        }
+    }
+
     private static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
@@ -114,32 +158,6 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує рік, який не може бути в майбутньому.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return рік у межах 1..поточний рік (включно)
-     */
-    private static int readYear(Scanner scanner, String prompt) {
-        int currentYear = java.time.Year.now().getValue();
-        while (true) {
-            int year = readPositiveInt(scanner, prompt);
-            if (year > currentYear) {
-                System.out.println("Error: year cannot be in the future.");
-                continue;
-            }
-            return year;
-        }
-    }
-
-    /**
-     * Зчитує значення {@link Size} з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return зчитаний {@link Size}
-     */
     private static Size readSize(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);

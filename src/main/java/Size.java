@@ -10,14 +10,12 @@ public enum Size {
     XXL;
 
     /**
-     * Перетворює текст на значення {@link Size}.
-     * <p>
-     * Розбір не залежить від регістру та ігнорує пробіли на початку/в кінці.
+     * Перетворює текстове значення на елемент переліку {@link Size}.
+     * Пробіли на початку й у кінці ігноруються, регістр не має значення.
      *
-     * @param value текст розміру (наприклад: {@code "m"}, {@code " XL "})
-     * @return відповідна константа перерахування
-     * @throws IllegalArgumentException якщо {@code value} дорівнює {@code null}, порожній/з пробілів
-     *                                  або не належить до: XS, S, M, L, XL, XXL
+     * @param value текстове значення розміру, наприклад {@code "m"} або {@code " XL "}
+     * @return відповідне значення переліку
+     * @throws IllegalArgumentException якщо значення null, порожнє або неприпустиме
      */
     public static Size fromString(String value) {
         if (value == null) {

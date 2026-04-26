@@ -3,56 +3,59 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Юніт-тести для {@link Clothes}.
- */
 class ClothesTest {
 
-    /**
-     * Перевіряє, що сеттери відхиляють некоректні значення.
-     */
     @Test
     void shouldThrowExceptionWhenInvalidValueInSetter() {
-        Clothes clothes = new Clothes("T-shirt", Size.M, 499.99, "Black", "Cotton");
+        Shirts clothes = new Shirts("T-shirt", Size.M, 499.99, "Cotton", 64);
 
         assertThrows(IllegalArgumentException.class, () -> clothes.setPrice(-1));
+        assertThrows(IllegalArgumentException.class, () -> clothes.setSleeveLength(0));
     }
 
-    /**
-     * Перевіряє, що сеттери рядкових полів та об'єктів відхиляють {@code null} і порожні значення.
-     */
     @Test
     void shouldThrowExceptionWhenStringFieldIsNullOrEmptyInSetter() {
-        Clothes clothes = new Clothes("T-shirt", Size.M, 499.99, "Black", "Cotton");
+        Pants clothes = new Pants("Pants", Size.M, 499.99, "Cotton", 82);
 
         assertThrows(IllegalArgumentException.class, () -> clothes.setName(""));
         assertThrows(IllegalArgumentException.class, () -> clothes.setSize(null));
-        assertThrows(IllegalArgumentException.class, () -> clothes.setColor(""));
         assertThrows(IllegalArgumentException.class, () -> clothes.setMaterial(null));
+        assertThrows(IllegalArgumentException.class, () -> clothes.setWaistSize(-5));
     }
 
-    /**
-     * Перевіряє, що конструктор відхиляє некоректні вхідні дані.
-     */
     @Test
     void shouldThrowExceptionWhenInvalidConstructorData() {
         assertThrows(IllegalArgumentException.class,
-                () -> new Clothes("", Size.M, 499.99, "Black", "Cotton"));
+                () -> new Shirts("", Size.M, 499.99, "Cotton", 60));
     }
 
-    /**
-     * Перевіряє, що коректні дані створюють правильний екземпляр {@link Clothes}.
-     */
     @Test
     void shouldCreateClothesWhenDataIsValid() {
-        Clothes clothes = assertDoesNotThrow(
-                () -> new Clothes("Jacket", Size.L, 1999.50, "Blue", "Denim"));
+        Shirts clothes = assertDoesNotThrow(
+                () -> new Shirts("Jacket", Size.L, 1999.50, "Denim", 68));
 
         assertEquals("Jacket", clothes.getName());
         assertEquals(Size.L, clothes.getSize());
         assertEquals(1999.50, clothes.getPrice());
-        assertEquals("Blue", clothes.getColor());
         assertEquals("Denim", clothes.getMaterial());
+        assertEquals(68, clothes.getSleeveLength());
+        assertEquals("Shirt", clothes.getType());
+    }
+
+    @Test
+    void shouldReturnReadableStringRepresentation() {
+        Manufacturer manufacturer = new Manufacturer("Levi's", "USA");
+        Pants pants = new Pants("501", Size.M, 2499.99, "Denim", manufacturer, 82);
+
+        String result = pants.toString();
+
+        assertTrue(result.contains("Pants: name='501'"));
+        assertTrue(result.contains("size=M"));
+        assertTrue(result.contains("price=2499.99"));
+        assertTrue(result.contains("material='Denim'"));
+        assertTrue(result.contains("Manufacturer: name='Levi's', country='USA'"));
+        assertTrue(result.contains("waistSize=82.0"));
     }
 }

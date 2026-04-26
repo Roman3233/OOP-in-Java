@@ -1,137 +1,67 @@
 /**
- * Представляє предмет одягу з базовими атрибутами (назва, розмір, ціна, колір, матеріал)
- * та опційним {@link Manufacturer}.
+ * Базовий абстрактний клас для всіх видів одягу в застосунку.
+ * Містить спільні властивості, які успадковують похідні класи.
  */
-public class Clothes {
+public abstract class Clothes {
     private String name;
     private Size size;
     private double price;
-    private String color;
     private String material;
     private Manufacturer manufacturer;
-    private static int count = 0;
 
     /**
-     * Створює предмет одягу без виробника.
+     * Створює об'єкт одягу без інформації про виробника.
      *
-     * @param name     назва одягу (не порожня)
-     * @param size     розмір (не {@code null})
-     * @param price    ціна (має бути &gt; 0)
-     * @param color    колір (не порожній)
-     * @param material матеріал (не порожній)
-     * @throws IllegalArgumentException якщо будь-який аргумент некоректний
+     * @param name назва виробу
+     * @param size розмір виробу
+     * @param price ціна виробу
+     * @param material матеріал виробу
      */
-    public Clothes(String name, Size size, double price, String color, String material) {
+    public Clothes(String name, Size size, double price, String material) {
         setName(name);
         setSize(size);
         setPrice(price);
-        setColor(color);
         setMaterial(material);
-        count++;
     }
 
     /**
-     * Створює предмет одягу з виробником.
+     * Створює об'єкт одягу з інформацією про виробника.
      *
-     * @param name         назва одягу (не порожня)
-     * @param size         розмір (не {@code null})
-     * @param price        ціна (має бути &gt; 0)
-     * @param color        колір (не порожній)
-     * @param material     матеріал (не порожній)
-     * @param manufacturer виробник (не {@code null})
-     * @throws IllegalArgumentException якщо будь-який аргумент некоректний
+     * @param name назва виробу
+     * @param size розмір виробу
+     * @param price ціна виробу
+     * @param material матеріал виробу
+     * @param manufacturer виробник
      */
-    public Clothes(String name, Size size, double price, String color, String material, Manufacturer manufacturer) {
-        this(name, size, price, color, material);
+    public Clothes(String name, Size size, double price, String material, Manufacturer manufacturer) {
+        this(name, size, price, material);
         setManufacturer(manufacturer);
     }
 
-    /**
-     * Конструктор копіювання.
-     *
-     * @param obj об'єкт-джерело (не {@code null})
-     * @throws IllegalArgumentException якщо {@code obj} дорівнює {@code null}
-     */
-    public Clothes(Clothes obj) {
-        if (obj == null) {
-            throw new IllegalArgumentException("Clothes cannot be null.");
-        }
-        this.name = obj.name;
-        this.size = obj.size;
-        this.price = obj.price;
-        this.color = obj.color;
-        this.material = obj.material;
-        this.manufacturer = obj.manufacturer == null ? null : new Manufacturer(obj.manufacturer);
-        count++;
-    }
-
-    /**
-     * @return назва одягу
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * @return розмір одягу
-     */
     public Size getSize() {
         return size;
     }
 
-    /**
-     * @return матеріал
-     */
-    public String getMaterial() {
-        return material;
-    }
-
-    /**
-     * @return ціна
-     */
     public double getPrice() {
         return price;
     }
 
-    /**
-     * @return колір
-     */
-    public String getColor() {
-        return color;
+    public String getMaterial() {
+        return material;
     }
 
-    /**
-     * @return виробник або {@code null}, якщо не задано
-     */
     public Manufacturer getManufacturer() {
         return manufacturer;
     }
 
-    /**
-     * Повертає загальну кількість екземплярів {@link Clothes}, створених будь-яким конструктором.
-     *
-     * @return кількість створених екземплярів
-     */
-    public static int getCount() {
-        return count;
-    }
-
-    /**
-     * Встановлює назву одягу.
-     *
-     * @param name назва (не порожня)
-     * @throws IllegalArgumentException якщо {@code name} дорівнює {@code null} або порожня/з пробілів
-     */
     public void setName(String name) {
         this.name = validateTextField(name, "Name");
     }
 
-    /**
-     * Встановлює розмір одягу.
-     *
-     * @param size розмір (не {@code null})
-     * @throws IllegalArgumentException якщо {@code size} дорівнює {@code null}
-     */
     public void setSize(Size size) {
         if (size == null) {
             throw new IllegalArgumentException("Size cannot be null.");
@@ -139,12 +69,6 @@ public class Clothes {
         this.size = size;
     }
 
-    /**
-     * Встановлює ціну.
-     *
-     * @param price ціна (має бути &gt; 0)
-     * @throws IllegalArgumentException якщо {@code price} не більша за 0
-     */
     public void setPrice(double price) {
         if (price <= 0) {
             throw new IllegalArgumentException("Price must be greater than 0.");
@@ -152,32 +76,10 @@ public class Clothes {
         this.price = price;
     }
 
-    /**
-     * Встановлює колір.
-     *
-     * @param color колір (не порожній)
-     * @throws IllegalArgumentException якщо {@code color} дорівнює {@code null} або порожній/з пробілів
-     */
-    public void setColor(String color) {
-        this.color = validateTextField(color, "Color");
-    }
-
-    /**
-     * Встановлює матеріал.
-     *
-     * @param material матеріал (не порожній)
-     * @throws IllegalArgumentException якщо {@code material} дорівнює {@code null} або порожній/з пробілів
-     */
     public void setMaterial(String material) {
         this.material = validateTextField(material, "Material");
     }
-    
-    /**
-     * Встановлює виробника.
-     *
-     * @param manufacturer виробник (не {@code null})
-     * @throws IllegalArgumentException якщо {@code manufacturer} дорівнює {@code null}
-     */
+
     public void setManufacturer(Manufacturer manufacturer) {
         if (manufacturer == null) {
             throw new IllegalArgumentException("Manufacturer cannot be null.");
@@ -185,13 +87,19 @@ public class Clothes {
         this.manufacturer = manufacturer;
     }
 
+    /**
+     * Повертає логічну назву типу для об'єкта похідного класу.
+     *
+     * @return назва типу одягу
+     */
+    public abstract String getType();
+
     @Override
     public String toString() {
-        String base = "Clothes: " +
+        String base = getType() + ": " +
                 "name='" + name + '\'' +
                 ", size=" + size +
                 ", price=" + price +
-                ", color='" + color + '\'' +
                 ", material='" + material + '\'';
 
         if (manufacturer == null) {
@@ -209,19 +117,11 @@ public class Clothes {
         Clothes other = (Clothes) obj;
 
         return name.equals(other.name) &&
-               size == other.size &&
-               price == other.price &&
-               color.equals(other.color);
+                size == other.size &&
+                price == other.price &&
+                material.equals(other.material);
     }
 
-    /**
-     * Перевіряє, що текстове поле не дорівнює {@code null} та не є порожнім/з пробілів.
-     *
-     * @param value     значення
-     * @param fieldName назва поля для повідомлення про помилку
-     * @return обрізане значення (trim)
-     * @throws IllegalArgumentException якщо {@code value} дорівнює {@code null} або порожнє/з пробілів
-     */
     private String validateTextField(String value, String fieldName) {
         if (value == null) {
             throw new IllegalArgumentException(fieldName + " cannot be null.");
