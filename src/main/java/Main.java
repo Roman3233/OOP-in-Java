@@ -24,6 +24,8 @@ public class Main {
             System.out.println(clothes);
         }
 
+        System.out.println("\nTotal clothes created: " + Clothes.getCount());
+
         scanner.close();
     }
 

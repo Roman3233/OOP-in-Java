@@ -4,6 +4,7 @@ public class Clothes {
     private double price;
     private String color;
     private String material;
+    private static int count = 0;
 
     public Clothes(String name, String size, double price, String color, String material) {
         setName(name);
@@ -11,6 +12,7 @@ public class Clothes {
         setPrice(price);
         setColor(color);
         setMaterial(material);
+        count++;
     }
 
     public Clothes(Clothes obj) {
@@ -19,6 +21,7 @@ public class Clothes {
         this.price = obj.price;
         this.color = obj.color;
         this.material = obj.material;
+        count++;
     }
 
     public String getName() {
@@ -39,6 +42,10 @@ public class Clothes {
 
     public String getColor() {
         return color;
+    }
+
+    public static int getCount() {
+        return count;
     }
 
     public void setName(String name) {
@@ -63,6 +70,7 @@ public class Clothes {
     public void setMaterial(String material) {
         this.material = validateTextField(material, "Material");
     }
+    
 
     @Override
     public String toString() {
