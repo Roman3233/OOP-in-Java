@@ -13,6 +13,14 @@ public class Clothes {
         setMaterial(material);
     }
 
+    public Clothes(Clothes obj) {
+        this.name = obj.name;
+        this.size = obj.size;
+        this.price = obj.price;
+        this.color = obj.color;
+        this.material = obj.material;
+    }
+
     public String getName() {
         return name;
     }
