@@ -1,57 +1,67 @@
 import java.util.Scanner;
 
-/**
- * Консольна точка входу: зчитує дані про одяг з {@link System#in} та виводить створені об'єкти.
- */
 public class Main {
-    /**
-     * Точка входу програми.
-     *
-     * @param args аргументи командного рядка (не використовуються)
-     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        int n = readPositiveInt(scanner, "Enter the number of clothes: ");
-        Clothes[] clothesArray = new Clothes[n];
-
-        for (int i = 0; i < n; i++) {
-            System.out.println("\nClothes #" + (i + 1));
-
-            String name = readNonEmptyString(scanner, "Name: ");
-            Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
-            double price = readPositiveDouble(scanner, "Price: ");
-            String color = readNonEmptyString(scanner, "Color: ");
-            String material = readNonEmptyString(scanner, "Material: ");
-
-            Clothes clothes = new Clothes(name, size, price, color, material);
-
-            System.out.println("Manufacturer for clothes #" + (i + 1));
-            String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
-            String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
-            int foundedYear = readYear(scanner, "Manufacturer founded year: ");
-
-            clothes.setManufacturer(new Manufacturer(manufacturerName, manufacturerCountry, foundedYear));
-            clothesArray[i] = clothes;
+        int pantsCount = readNonNegativeInt(scanner, "Enter the number of pants: ");
+        Pants[] pantsArray = new Pants[pantsCount];
+        for (int i = 0; i < pantsCount; i++) {
+            System.out.println("\nPants #" + (i + 1));
+            pantsArray[i] = createPants(scanner);
         }
 
-        System.out.println("\nAll clothes (with manufacturers):");
-        for (Clothes clothes : clothesArray) {
-            System.out.println(clothes);
+        int shirtsCount = readNonNegativeInt(scanner, "Enter the number of shirts: ");
+        Shirts[] shirtsArray = new Shirts[shirtsCount];
+        for (int i = 0; i < shirtsCount; i++) {
+            System.out.println("\nShirt #" + (i + 1));
+            shirtsArray[i] = createShirt(scanner);
         }
 
-        System.out.println("\nTotal clothes created: " + Clothes.getCount());
+        System.out.println("\nAll pants:");
+        for (Pants pants : pantsArray) {
+            System.out.println(pants);
+        }
+
+        System.out.println("\nAll shirts:");
+        for (Shirts shirt : shirtsArray) {
+            System.out.println(shirt);
+        }
 
         scanner.close();
     }
 
-    /**
-     * Зчитує непорожній рядок з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return непорожній рядок без пробілів на краях (trim)
-     */
+    private static Pants createPants(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String color = readNonEmptyString(scanner, "Color: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        double waistSize = readPositiveDouble(scanner, "Waist size: ");
+        Manufacturer manufacturer = readManufacturer(scanner);
+
+        return new Pants(name, size, price, color, material, manufacturer, waistSize);
+    }
+
+    private static Shirts createShirt(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String color = readNonEmptyString(scanner, "Color: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        double sleeveLength = readPositiveDouble(scanner, "Sleeve length: ");
+        Manufacturer manufacturer = readManufacturer(scanner);
+
+        return new Shirts(name, size, price, color, material, manufacturer, sleeveLength);
+    }
+
+    private static Manufacturer readManufacturer(Scanner scanner) {
+        String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
+        String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
+        int foundedYear = readYear(scanner, "Manufacturer founded year: ");
+        return new Manufacturer(manufacturerName, manufacturerCountry, foundedYear);
+    }
+
     private static String readNonEmptyString(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -66,21 +76,14 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує додатне ціле число з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return ціле число &gt; 0
-     */
-    private static int readPositiveInt(Scanner scanner, String prompt) {
+    private static int readNonNegativeInt(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
 
             try {
                 int value = Integer.parseInt(input);
-                if (value <= 0) {
-                    System.out.println("Error: value must be greater than 0.");
+                if (value < 0) {
+                    System.out.println("Error: value cannot be negative.");
                     continue;
                 }
                 return value;
@@ -90,13 +93,17 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує додатне число з плаваючою комою з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return число &gt; 0
-     */
+    private static int readPositiveInt(Scanner scanner, String prompt) {
+        while (true) {
+            int value = readNonNegativeInt(scanner, prompt);
+            if (value == 0) {
+                System.out.println("Error: value must be greater than 0.");
+                continue;
+            }
+            return value;
+        }
+    }
+
     private static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
@@ -114,13 +121,6 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує рік, який не може бути в майбутньому.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return рік у межах 1..поточний рік (включно)
-     */
     private static int readYear(Scanner scanner, String prompt) {
         int currentYear = java.time.Year.now().getValue();
         while (true) {
@@ -133,13 +133,6 @@ public class Main {
         }
     }
 
-    /**
-     * Зчитує значення {@link Size} з консолі.
-     *
-     * @param scanner сканер вводу
-     * @param prompt  запрошення (prompt) перед зчитуванням
-     * @return зчитаний {@link Size}
-     */
     private static Size readSize(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
