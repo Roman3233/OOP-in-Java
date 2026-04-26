@@ -1,7 +1,16 @@
+/**
+ * Представляє виробника одягу.
+ */
 public class Manufacturer {
     private String name;
     private String country;
 
+    /**
+     * Створює об'єкт виробника.
+     *
+     * @param name назва виробника
+     * @param country країна виробника
+     */
     public Manufacturer(String name, String country) {
         setName(name);
         setCountry(country);

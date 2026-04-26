@@ -2,7 +2,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Консольна точка входу для роботи з об'єктами одягу.
+ * Дозволяє створювати об'єкти похідних класів і переглядати їх в одному списку.
+ */
 public class Main {
+    /**
+     * Запускає консольне меню програми.
+     *
+     * @param args аргументи командного рядка
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         List<Clothes> clothesList = new ArrayList<>();

@@ -1,3 +1,7 @@
+/**
+ * Базовий абстрактний клас для всіх видів одягу в застосунку.
+ * Містить спільні властивості, які успадковують похідні класи.
+ */
 public abstract class Clothes {
     private String name;
     private Size size;
@@ -5,6 +9,14 @@ public abstract class Clothes {
     private String material;
     private Manufacturer manufacturer;
 
+    /**
+     * Створює об'єкт одягу без інформації про виробника.
+     *
+     * @param name назва виробу
+     * @param size розмір виробу
+     * @param price ціна виробу
+     * @param material матеріал виробу
+     */
     public Clothes(String name, Size size, double price, String material) {
         setName(name);
         setSize(size);
@@ -12,6 +24,15 @@ public abstract class Clothes {
         setMaterial(material);
     }
 
+    /**
+     * Створює об'єкт одягу з інформацією про виробника.
+     *
+     * @param name назва виробу
+     * @param size розмір виробу
+     * @param price ціна виробу
+     * @param material матеріал виробу
+     * @param manufacturer виробник
+     */
     public Clothes(String name, Size size, double price, String material, Manufacturer manufacturer) {
         this(name, size, price, material);
         setManufacturer(manufacturer);
@@ -66,6 +87,11 @@ public abstract class Clothes {
         this.manufacturer = manufacturer;
     }
 
+    /**
+     * Повертає логічну назву типу для об'єкта похідного класу.
+     *
+     * @return назва типу одягу
+     */
     public abstract String getType();
 
     @Override
