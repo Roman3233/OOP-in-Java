@@ -110,7 +110,7 @@ public class Main {
 
         System.out.println("\nAll clothes:");
         for (Clothes clothes : clothesList) {
-            System.out.println(clothes.getType() + " -> " + clothes);
+            System.out.println(clothes);
         }
     }
 
