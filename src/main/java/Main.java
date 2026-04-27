@@ -18,34 +18,17 @@ public class Main {
 
         boolean running = true;
         while (running) {
-            printMenu();
-            int choice = readMenuChoice(scanner);
+            printMainMenu();
+            int choice = readMainMenuChoice(scanner);
 
             switch (choice) {
                 case 1:
-                    System.out.println("\nCreating pants:");
-                    clothesList.add(createPants(scanner));
-                    System.out.println("Pants added successfully.");
+                    createClothesFromSubmenu(scanner, clothesList);
                     break;
                 case 2:
-                    System.out.println("\nCreating shirt:");
-                    clothesList.add(createShirt(scanner));
-                    System.out.println("Shirt added successfully.");
-                    break;
-                case 3:
-                    System.out.println("\nCreating jacket:");
-                    clothesList.add(createJacket(scanner));
-                    System.out.println("Jacket added successfully.");
-                    break;
-                case 4:
-                    System.out.println("\nCreating hat:");
-                    clothesList.add(createHat(scanner));
-                    System.out.println("Hat added successfully.");
-                    break;
-                case 5:
                     printAllClothes(clothesList);
                     break;
-                case 0:
+                case 3:
                     running = false;
                     System.out.println("Program finished.");
                     break;
@@ -57,18 +40,66 @@ public class Main {
         scanner.close();
     }
 
-    private static void printMenu() {
-        System.out.println("\nMenu:");
-        System.out.println("1. Create pants");
-        System.out.println("2. Create shirt");
-        System.out.println("3. Create jacket");
-        System.out.println("4. Create hat");
-        System.out.println("5. Show all clothes");
-        System.out.println("0. Exit");
+    private static void printMainMenu() {
+        System.out.println("\nMain menu:");
+        System.out.println("1. Create new object");
+        System.out.println("2. Show all clothes");
+        System.out.println("3. Exit");
     }
 
-    private static int readMenuChoice(Scanner scanner) {
+    private static int readMainMenuChoice(Scanner scanner) {
         return readNonNegativeInt(scanner, "Choose an option: ");
+    }
+
+    private static void printCreateSubmenu() {
+        System.out.println("\nChoose clothes type:");
+        System.out.println("1. Pants");
+        System.out.println("2. Shirt");
+        System.out.println("3. Jacket");
+        System.out.println("4. Hat");
+        System.out.println("0. Return to main menu");
+    }
+
+    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList) {
+        boolean inSubmenu = true;
+
+        while (inSubmenu) {
+            printCreateSubmenu();
+            int choice = readNonNegativeInt(scanner, "Choose clothes type: ");
+
+            switch (choice) {
+                case 1:
+                    System.out.println("\nCreating pants:");
+                    clothesList.add(createPants(scanner));
+                    System.out.println("Pants added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 2:
+                    System.out.println("\nCreating shirt:");
+                    clothesList.add(createShirt(scanner));
+                    System.out.println("Shirt added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 3:
+                    System.out.println("\nCreating jacket:");
+                    clothesList.add(createJacket(scanner));
+                    System.out.println("Jacket added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 4:
+                    System.out.println("\nCreating hat:");
+                    clothesList.add(createHat(scanner));
+                    System.out.println("Hat added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 0:
+                    System.out.println("Returning to main menu.");
+                    inSubmenu = false;
+                    break;
+                default:
+                    System.out.println("Error: unknown menu option.");
+            }
+        }
     }
 
     private static void printAllClothes(List<Clothes> clothesList) {
