@@ -5,7 +5,7 @@ public class Pants extends Clothes {
     private double waistSize;
 
     /**
-     * Створює об'єкт штанів без інформації про виробника.
+     * Створює об'єкт штанів.
      *
      * @param name назва виробу
      * @param size розмір виробу

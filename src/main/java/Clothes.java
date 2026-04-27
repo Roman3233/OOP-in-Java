@@ -9,7 +9,7 @@ public abstract class Clothes {
     private String material;
 
     /**
-     * Створює об'єкт одягу без інформації про виробника.
+     * Створює об'єкт одягу.
      *
      * @param name назва виробу
      * @param size розмір виробу
@@ -70,11 +70,10 @@ public abstract class Clothes {
 
     @Override
     public String toString() {
-        String base = 
-                "name='" + name + '\'' +
-                ", size=" + size +
-                ", price=" + price +
-                ", material='" + material + '\'';
+        String base =   "name='" + name + '\'' +
+                        ", size=" + size +
+                        ", price=" + price +
+                        ", material='" + material + '\'';
         return base;
     }
 
