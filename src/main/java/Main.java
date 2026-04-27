@@ -33,6 +33,16 @@ public class Main {
                     System.out.println("Shirt added successfully.");
                     break;
                 case 3:
+                    System.out.println("\nCreating jacket:");
+                    clothesList.add(createJacket(scanner));
+                    System.out.println("Jacket added successfully.");
+                    break;
+                case 4:
+                    System.out.println("\nCreating hat:");
+                    clothesList.add(createHat(scanner));
+                    System.out.println("Hat added successfully.");
+                    break;
+                case 5:
                     printAllClothes(clothesList);
                     break;
                 case 0:
@@ -51,7 +61,9 @@ public class Main {
         System.out.println("\nMenu:");
         System.out.println("1. Create pants");
         System.out.println("2. Create shirt");
-        System.out.println("3. Show all clothes");
+        System.out.println("3. Create jacket");
+        System.out.println("4. Create hat");
+        System.out.println("5. Show all clothes");
         System.out.println("0. Exit");
     }
 
@@ -89,6 +101,24 @@ public class Main {
         return new Shirts(name, size, price, material, sleeveLength);
     }
 
+    private static Jacket createJacket(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        int pocketCount = readNonNegativeInt(scanner, "Pocket count: ");
+        return new Jacket(name, size, price, material, pocketCount);
+    }
+
+    private static Hat createHat(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        double brimWidth = readPositiveDouble(scanner, "Brim width: ");
+        return new Hat(name, size, price, material, brimWidth);
+    }
+
     private static String readNonEmptyString(Scanner scanner, String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -119,7 +149,6 @@ public class Main {
             }
         }
     }
-
 
     private static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {
