@@ -5,19 +5,27 @@ public class Pants extends Clothes {
     private double waistSize;
 
     /**
-     * Створює об'єкт штанів без інформації про виробника.
+     * Створює об'єкт штанів.
      *
      * @param name назва виробу
      * @param size розмір виробу
      * @param price ціна виробу
      * @param material матеріал виробу
      * @param waistSize обхват талії
+     * @throws IllegalArgumentException якщо {@code name} або {@code material} є {@code null} / порожніми,
+     *                                  якщо {@code size} є {@code null}, якщо {@code price <= 0},
+     *                                  якщо {@code waistSize <= 0}
      */
     public Pants(String name, Size size, double price, String material, double waistSize) {
         super(name, size, price, material);
         setWaistSize(waistSize);
     }
 
+    /**
+     * Повертає обхват талії.
+     *
+     * @return обхват талії
+     */
     public double getWaistSize() {
         return waistSize;
     }

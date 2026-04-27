@@ -9,12 +9,14 @@ public abstract class Clothes {
     private String material;
 
     /**
-     * Створює об'єкт одягу без інформації про виробника.
+     * Створює об'єкт одягу.
      *
      * @param name назва виробу
      * @param size розмір виробу
      * @param price ціна виробу
      * @param material матеріал виробу
+     * @throws IllegalArgumentException якщо {@code name} або {@code material} є {@code null} / порожніми,
+     *                                  якщо {@code size} є {@code null} або якщо {@code price <= 0}
      */
     public Clothes(String name, Size size, double price, String material) {
         setName(name);
@@ -23,26 +25,58 @@ public abstract class Clothes {
         setMaterial(material);
     }
 
+    /**
+     * Повертає назву виробу.
+     *
+     * @return назва виробу
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Повертає розмір виробу.
+     *
+     * @return розмір виробу
+     */
     public Size getSize() {
         return size;
     }
 
+    /**
+     * Повертає ціну виробу.
+     *
+     * @return ціна виробу
+     */
     public double getPrice() {
         return price;
     }
 
+    /**
+     * Повертає матеріал виробу.
+     *
+     * @return матеріал виробу
+     */
     public String getMaterial() {
         return material;
     }
 
+    /**
+     * Встановлює назву виробу.
+     *
+     * @param name назва виробу
+     * @throws IllegalArgumentException якщо {@code name} є {@code null} або порожнім
+     */
     public void setName(String name) {
         this.name = validateTextField(name, "Name");
     }
 
+    /**
+     * Встановлює розмір виробу.
+     *
+     * @param size розмір виробу
+     * @throws IllegalArgumentException якщо {@code size} є {@code null}
+     */
     public void setSize(Size size) {
         if (size == null) {
             throw new IllegalArgumentException("Size cannot be null.");
@@ -50,6 +84,12 @@ public abstract class Clothes {
         this.size = size;
     }
 
+    /**
+     * Встановлює ціну виробу.
+     *
+     * @param price ціна виробу
+     * @throws IllegalArgumentException якщо {@code price <= 0}
+     */
     public void setPrice(double price) {
         if (price <= 0) {
             throw new IllegalArgumentException("Price must be greater than 0.");
@@ -57,6 +97,12 @@ public abstract class Clothes {
         this.price = price;
     }
 
+    /**
+     * Встановлює матеріал виробу.
+     *
+     * @param material матеріал виробу
+     * @throws IllegalArgumentException якщо {@code material} є {@code null} або порожнім
+     */
     public void setMaterial(String material) {
         this.material = validateTextField(material, "Material");
     }

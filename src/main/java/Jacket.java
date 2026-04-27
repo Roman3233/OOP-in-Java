@@ -12,12 +12,20 @@ public class Jacket extends Clothes {
      * @param price ціна виробу
      * @param material матеріал виробу
      * @param pocketCount кількість кишень
+     * @throws IllegalArgumentException якщо {@code name} або {@code material} є {@code null} / порожніми,
+     *                                  якщо {@code size} є {@code null}, якщо {@code price <= 0},
+     *                                  якщо {@code pocketCount < 0} або {@code pocketCount > 10}
      */
     public Jacket(String name, Size size, double price, String material, int pocketCount) {
         super(name, size, price, material);
         setPocketCount(pocketCount);
     }
 
+    /**
+     * Повертає кількість кишень.
+     *
+     * @return кількість кишень
+     */
     public int getPocketCount() {
         return pocketCount;
     }

@@ -12,12 +12,20 @@ public class Hat extends Clothes {
      * @param price ціна виробу
      * @param material матеріал виробу
      * @param brimWidth ширина полів
+     * @throws IllegalArgumentException якщо {@code name} або {@code material} є {@code null} / порожніми,
+     *                                  якщо {@code size} є {@code null}, якщо {@code price <= 0},
+     *                                  якщо {@code brimWidth <= 0}
      */
     public Hat(String name, Size size, double price, String material, double brimWidth) {
         super(name, size, price, material);
         setBrimWidth(brimWidth);
     }
 
+    /**
+     * Повертає ширину полів.
+     *
+     * @return ширина полів
+     */
     public double getBrimWidth() {
         return brimWidth;
     }
