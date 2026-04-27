@@ -1,17 +1,20 @@
 /**
- * Представляє сорочки з додатковою властивістю довжини рукава.
+ * Представляє сорочку з додатковою властивістю довжини рукава.
  */
 public class Shirts extends Clothes {
     private double sleeveLength;
 
     /**
-     * Створює об'єкт сорочки без інформації про виробника.
+     * Створює об'єкт сорочки.
      *
      * @param name назва виробу
      * @param size розмір виробу
      * @param price ціна виробу
      * @param material матеріал виробу
      * @param sleeveLength довжина рукава
+     * @throws IllegalArgumentException якщо {@code name} або {@code material} є {@code null} / порожніми,
+     *                                  якщо {@code size} є {@code null}, якщо {@code price <= 0},
+     *                                  якщо {@code sleeveLength <= 0}
      */
     public Shirts(String name, Size size, double price, String material, double sleeveLength) {
         super(name, size, price, material);
@@ -19,21 +22,10 @@ public class Shirts extends Clothes {
     }
 
     /**
-     * Створює об'єкт сорочки з інформацією про виробника.
+     * Повертає довжину рукава.
      *
-     * @param name назва виробу
-     * @param size розмір виробу
-     * @param price ціна виробу
-     * @param material матеріал виробу
-     * @param manufacturer виробник
-     * @param sleeveLength довжина рукава
+     * @return довжина рукава
      */
-    public Shirts(String name, Size size, double price, String material,
-                  Manufacturer manufacturer, double sleeveLength) {
-        super(name, size, price, material, manufacturer);
-        setSleeveLength(sleeveLength);
-    }
-
     public double getSleeveLength() {
         return sleeveLength;
     }

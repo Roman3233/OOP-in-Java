@@ -3,8 +3,8 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Консольна точка входу для роботи з об'єктами одягу.
- * Дозволяє створювати об'єкти похідних класів і переглядати їх в одному списку.
+ * Драйвер застосунку з консольним меню для роботи з об'єктами одягу.
+ * Дозволяє створювати об'єкти різних типів і переглядати їх у спільній колекції.
  */
 public class Main {
     /**
@@ -18,24 +18,17 @@ public class Main {
 
         boolean running = true;
         while (running) {
-            printMenu();
-            int choice = readMenuChoice(scanner);
+            printMainMenu();
+            int choice = readMainMenuChoice(scanner);
 
             switch (choice) {
                 case 1:
-                    System.out.println("\nCreating pants:");
-                    clothesList.add(createPants(scanner));
-                    System.out.println("Pants added successfully.");
+                    createClothesFromSubmenu(scanner, clothesList);
                     break;
                 case 2:
-                    System.out.println("\nCreating shirt:");
-                    clothesList.add(createShirt(scanner));
-                    System.out.println("Shirt added successfully.");
-                    break;
-                case 3:
                     printAllClothes(clothesList);
                     break;
-                case 0:
+                case 3:
                     running = false;
                     System.out.println("Program finished.");
                     break;
@@ -47,16 +40,66 @@ public class Main {
         scanner.close();
     }
 
-    private static void printMenu() {
-        System.out.println("\nMenu:");
-        System.out.println("1. Create pants");
-        System.out.println("2. Create shirt");
-        System.out.println("3. Show all clothes");
-        System.out.println("0. Exit");
+    private static void printMainMenu() {
+        System.out.println("\nMain menu:");
+        System.out.println("1. Create new object");
+        System.out.println("2. Show all clothes");
+        System.out.println("3. Exit");
     }
 
-    private static int readMenuChoice(Scanner scanner) {
+    private static int readMainMenuChoice(Scanner scanner) {
         return readNonNegativeInt(scanner, "Choose an option: ");
+    }
+
+    private static void printCreateSubmenu() {
+        System.out.println("\nChoose clothes type:");
+        System.out.println("1. Pants");
+        System.out.println("2. Shirt");
+        System.out.println("3. Jacket");
+        System.out.println("4. Hat");
+        System.out.println("0. Return to main menu");
+    }
+
+    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList) {
+        boolean inSubmenu = true;
+
+        while (inSubmenu) {
+            printCreateSubmenu();
+            int choice = readNonNegativeInt(scanner, "Choose clothes type: ");
+
+            switch (choice) {
+                case 1:
+                    System.out.println("\nCreating pants:");
+                    clothesList.add(createPants(scanner));
+                    System.out.println("Pants added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 2:
+                    System.out.println("\nCreating shirt:");
+                    clothesList.add(createShirt(scanner));
+                    System.out.println("Shirt added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 3:
+                    System.out.println("\nCreating jacket:");
+                    clothesList.add(createJacket(scanner));
+                    System.out.println("Jacket added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 4:
+                    System.out.println("\nCreating hat:");
+                    clothesList.add(createHat(scanner));
+                    System.out.println("Hat added successfully.");
+                    inSubmenu = false;
+                    break;
+                case 0:
+                    System.out.println("Returning to main menu.");
+                    inSubmenu = false;
+                    break;
+                default:
+                    System.out.println("Error: unknown menu option.");
+            }
+        }
     }
 
     private static void printAllClothes(List<Clothes> clothesList) {
@@ -67,7 +110,7 @@ public class Main {
 
         System.out.println("\nAll clothes:");
         for (Clothes clothes : clothesList) {
-            System.out.println(clothes.getType() + " -> " + clothes);
+            System.out.println(clothes);
         }
     }
 
@@ -77,9 +120,7 @@ public class Main {
         double price = readPositiveDouble(scanner, "Price: ");
         String material = readNonEmptyString(scanner, "Material: ");
         double waistSize = readPositiveDouble(scanner, "Waist size: ");
-        Manufacturer manufacturer = readManufacturer(scanner);
-
-        return new Pants(name, size, price, material, manufacturer, waistSize);
+        return new Pants(name, size, price, material, waistSize);
     }
 
     private static Shirts createShirt(Scanner scanner) {
@@ -88,15 +129,25 @@ public class Main {
         double price = readPositiveDouble(scanner, "Price: ");
         String material = readNonEmptyString(scanner, "Material: ");
         double sleeveLength = readPositiveDouble(scanner, "Sleeve length: ");
-        Manufacturer manufacturer = readManufacturer(scanner);
-
-        return new Shirts(name, size, price, material, manufacturer, sleeveLength);
+        return new Shirts(name, size, price, material, sleeveLength);
     }
 
-    private static Manufacturer readManufacturer(Scanner scanner) {
-        String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
-        String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
-        return new Manufacturer(manufacturerName, manufacturerCountry);
+    private static Jacket createJacket(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        int pocketCount = readPocketCount(scanner, "Pocket count: ");
+        return new Jacket(name, size, price, material, pocketCount);
+    }
+
+    private static Hat createHat(Scanner scanner) {
+        String name = readNonEmptyString(scanner, "Name: ");
+        Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
+        double price = readPositiveDouble(scanner, "Price: ");
+        String material = readNonEmptyString(scanner, "Material: ");
+        double brimWidth = readPositiveDouble(scanner, "Brim width: ");
+        return new Hat(name, size, price, material, brimWidth);
     }
 
     private static String readNonEmptyString(Scanner scanner, String prompt) {
@@ -130,17 +181,6 @@ public class Main {
         }
     }
 
-    private static int readPositiveInt(Scanner scanner, String prompt) {
-        while (true) {
-            int value = readNonNegativeInt(scanner, prompt);
-            if (value == 0) {
-                System.out.println("Error: value must be greater than 0.");
-                continue;
-            }
-            return value;
-        }
-    }
-
     private static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
@@ -165,6 +205,26 @@ public class Main {
                 return Size.fromString(input);
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
+    private static int readPocketCount(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readNonEmptyString(scanner, prompt);
+
+            try {
+                int value = Integer.parseInt(input);
+                if (value < 0) {
+                    System.out.println("Error: pocket count cannot be negative.");
+                    continue;
+                }
+                if (value > 10) {
+                    System.out.println("Error: pocket count cannot be greater than 10.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: please enter a valid integer for pocket count.");
             }
         }
     }
