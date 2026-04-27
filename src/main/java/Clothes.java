@@ -116,6 +116,7 @@ public abstract class Clothes {
 
     @Override
     public String toString() {
+
         String base =
                 "name='" + name + '\'' +
                 ", size=" + size +
