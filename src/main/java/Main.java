@@ -7,6 +7,9 @@ import java.util.Scanner;
  * Дозволяє створювати об'єкти різних типів і переглядати їх у спільній колекції.
  */
 public class Main {
+    private static final String STORAGE_PATH_PROPERTY = "clothes.storage.path";
+    private static final String DEFAULT_STORAGE_PATH = "input.txt";
+
     /**
      * Запускає консольне меню програми.
      *
@@ -14,7 +17,8 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Clothes> clothesList = new ArrayList<>();
+        ClothesFileStorage storage = new ClothesFileStorage(resolveStoragePath());
+        List<Clothes> clothesList = new ArrayList<>(storage.loadClothes());
 
         boolean running = true;
         while (running) {
@@ -23,7 +27,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    createClothesFromSubmenu(scanner, clothesList);
+                    createClothesFromSubmenu(scanner, clothesList, storage);
                     break;
                 case 2:
                     printAllClothes(clothesList);
@@ -60,7 +64,8 @@ public class Main {
         System.out.println("0. Return to main menu");
     }
 
-    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList) {
+    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList,
+                                                 ClothesFileStorage storage) {
         boolean inSubmenu = true;
 
         while (inSubmenu) {
@@ -70,25 +75,25 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("\nCreating pants:");
-                    clothesList.add(createPants(scanner));
+                    addClothes(clothesList, storage, createPants(scanner));
                     System.out.println("Pants added successfully.");
                     inSubmenu = false;
                     break;
                 case 2:
                     System.out.println("\nCreating shirt:");
-                    clothesList.add(createShirt(scanner));
+                    addClothes(clothesList, storage, createShirt(scanner));
                     System.out.println("Shirt added successfully.");
                     inSubmenu = false;
                     break;
                 case 3:
                     System.out.println("\nCreating jacket:");
-                    clothesList.add(createJacket(scanner));
+                    addClothes(clothesList, storage, createJacket(scanner));
                     System.out.println("Jacket added successfully.");
                     inSubmenu = false;
                     break;
                 case 4:
                     System.out.println("\nCreating hat:");
-                    clothesList.add(createHat(scanner));
+                    addClothes(clothesList, storage, createHat(scanner));
                     System.out.println("Hat added successfully.");
                     inSubmenu = false;
                     break;
@@ -100,6 +105,11 @@ public class Main {
                     System.out.println("Error: unknown menu option.");
             }
         }
+    }
+
+    private static void addClothes(List<Clothes> clothesList, ClothesFileStorage storage, Clothes clothes) {
+        clothesList.add(clothes);
+        storage.appendClothes(clothes);
     }
 
     private static void printAllClothes(List<Clothes> clothesList) {
@@ -208,6 +218,11 @@ public class Main {
             }
         }
     }
+
+    private static String resolveStoragePath() {
+        return System.getProperty(STORAGE_PATH_PROPERTY, DEFAULT_STORAGE_PATH);
+    }
+
     private static int readPocketCount(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
