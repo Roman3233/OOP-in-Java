@@ -137,7 +137,7 @@ public class Main {
         Size size = readSize(scanner, "Size (XS/S/M/L/XL/XXL): ");
         double price = readPositiveDouble(scanner, "Price: ");
         String material = readNonEmptyString(scanner, "Material: ");
-        int pocketCount = readNonNegativeInt(scanner, "Pocket count: ");
+        int pocketCount = readPocketCount(scanner, "Pocket count: ");
         return new Jacket(name, size, price, material, pocketCount);
     }
 
@@ -205,6 +205,26 @@ public class Main {
                 return Size.fromString(input);
             } catch (IllegalArgumentException e) {
                 System.out.println("Error: " + e.getMessage());
+            }
+        }
+    }
+    private static int readPocketCount(Scanner scanner, String prompt) {
+        while (true) {
+            String input = readNonEmptyString(scanner, prompt);
+
+            try {
+                int value = Integer.parseInt(input);
+                if (value < 0) {
+                    System.out.println("Error: pocket count cannot be negative.");
+                    continue;
+                }
+                if (value > 10) {
+                    System.out.println("Error: pocket count cannot be greater than 10.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: please enter a valid integer for pocket count.");
             }
         }
     }

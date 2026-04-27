@@ -35,15 +35,6 @@ public class Hat extends Clothes {
         this.brimWidth = brimWidth;
     }
 
-    /**
-     * Повертає {@code true}, якщо головний убір дає виражений захист від сонця.
-     *
-     * @return {@code true}, якщо ширина полів не менша за 7
-     */
-    public boolean hasSunProtection() {
-        return brimWidth >= 7;
-    }
-
     @Override
     public String getType() {
         return "Hat";

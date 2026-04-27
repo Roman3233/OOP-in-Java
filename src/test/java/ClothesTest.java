@@ -36,6 +36,13 @@ class ClothesTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenPocketCountIsInvalid() {
+        Jacket jacket = new Jacket("Windbreaker", Size.L, 2999.99, "Nylon", 5);
+        assertThrows(IllegalArgumentException.class, () -> jacket.setPocketCount(-1));
+        assertThrows(IllegalArgumentException.class, () -> jacket.setPocketCount(11));
+    }
+
+    @Test
     void shouldCreateClothesWhenDataIsValid() {
         Shirts clothes = assertDoesNotThrow(
                 () -> new Shirts("Jacket", Size.L, 1999.50, "Denim", 68));
@@ -51,9 +58,7 @@ class ClothesTest {
         assertEquals(68, clothes.getSleeveLength());
         assertEquals("Shirt", clothes.getType());
         assertEquals(9, jacket.getPocketCount());
-        assertTrue(jacket.hasPracticalPockets());
         assertEquals(7.5, hat.getBrimWidth());
-        assertTrue(hat.hasSunProtection());
     }
 
     @Test

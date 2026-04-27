@@ -26,22 +26,16 @@ public class Jacket extends Clothes {
      * Встановлює кількість кишень куртки.
      *
      * @param pocketCount кількість кишень
-     * @throws IllegalArgumentException якщо {@code pocketCount < 0}
+     * @throws IllegalArgumentException якщо {@code pocketCount < 0} або {@code pocketCount > 10}
      */
     public void setPocketCount(int pocketCount) {
         if (pocketCount < 0) {
             throw new IllegalArgumentException("Pocket count cannot be negative.");
         }
+        if (pocketCount > 10) {
+            throw new IllegalArgumentException("Pocket count cannot be greater than 10.");
+        }
         this.pocketCount = pocketCount;
-    }
-
-    /**
-     * Повертає {@code true}, якщо куртка має щонайменше дві кишені.
-     *
-     * @return {@code true}, якщо кількість кишень не менша за 2
-     */
-    public boolean hasPracticalPockets() {
-        return pocketCount >= 2;
     }
 
     @Override

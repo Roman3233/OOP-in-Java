@@ -70,12 +70,12 @@ public abstract class Clothes {
 
     @Override
     public String toString() {
-        String base = 
+        String base =
                 "name='" + name + '\'' +
                 ", size=" + size +
                 ", price=" + price +
                 ", material='" + material + '\'';
-        return base;
+        return getType() + ": " + base;
     }
 
     @Override
