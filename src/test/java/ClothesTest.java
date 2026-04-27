@@ -5,8 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Тести для моделі одягу ({@link Clothes}) та її реалізацій: {@link Pants}, {@link Shirts},
+ * {@link Jacket} і {@link Hat}.
+ *
+ * <p>Перевіряють валідацію в конструкторах/сетерах і формат рядкового представлення об'єктів.</p>
+ */
 class ClothesTest {
 
+    /**
+     * Перевіряє, що сетери кидають {@link IllegalArgumentException} при некоректних числових значеннях.
+     */
     @Test
     void shouldThrowExceptionWhenInvalidValueInSetter() {
         Shirts clothes = new Shirts("T-shirt", Size.M, 499.99, "Cotton", 64);
@@ -19,6 +28,10 @@ class ClothesTest {
         assertThrows(IllegalArgumentException.class, () -> hat.setBrimWidth(0));
     }
 
+    /**
+     * Перевіряє, що сетери кидають {@link IllegalArgumentException} при {@code null}/порожніх рядках
+     * і при некоректних значеннях полів.
+     */
     @Test
     void shouldThrowExceptionWhenStringFieldIsNullOrEmptyInSetter() {
         Pants clothes = new Pants("Pants", Size.M, 499.99, "Cotton", 82);
@@ -29,12 +42,18 @@ class ClothesTest {
         assertThrows(IllegalArgumentException.class, () -> clothes.setWaistSize(-5));
     }
 
+    /**
+     * Перевіряє, що конструктор кидає {@link IllegalArgumentException} при некоректних даних.
+     */
     @Test
     void shouldThrowExceptionWhenInvalidConstructorData() {
         assertThrows(IllegalArgumentException.class,
                 () -> new Shirts("", Size.M, 499.99, "Cotton", 60));
     }
 
+    /**
+     * Перевіряє обмеження для кількості кишень у {@link Jacket}.
+     */
     @Test
     void shouldThrowExceptionWhenPocketCountIsInvalid() {
         Jacket jacket = new Jacket("Windbreaker", Size.L, 2999.99, "Nylon", 5);
@@ -42,6 +61,9 @@ class ClothesTest {
         assertThrows(IllegalArgumentException.class, () -> jacket.setPocketCount(11));
     }
 
+    /**
+     * Перевіряє, що валідні дані створюють об'єкти, та що гетери повертають очікувані значення.
+     */
     @Test
     void shouldCreateClothesWhenDataIsValid() {
         Shirts clothes = assertDoesNotThrow(
@@ -61,6 +83,9 @@ class ClothesTest {
         assertEquals(7.5, hat.getBrimWidth());
     }
 
+    /**
+     * Перевіряє, що {@code toString()} повертає людинозрозумілий рядок з типом і полями об'єкта.
+     */
     @Test
     void shouldReturnReadableStringRepresentation() {
         Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
