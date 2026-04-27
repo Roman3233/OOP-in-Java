@@ -18,22 +18,6 @@ public class Shirts extends Clothes {
         setSleeveLength(sleeveLength);
     }
 
-    /**
-     * Створює об'єкт сорочки з інформацією про виробника.
-     *
-     * @param name назва виробу
-     * @param size розмір виробу
-     * @param price ціна виробу
-     * @param material матеріал виробу
-     * @param manufacturer виробник
-     * @param sleeveLength довжина рукава
-     */
-    public Shirts(String name, Size size, double price, String material,
-                  Manufacturer manufacturer, double sleeveLength) {
-        super(name, size, price, material, manufacturer);
-        setSleeveLength(sleeveLength);
-    }
-
     public double getSleeveLength() {
         return sleeveLength;
     }

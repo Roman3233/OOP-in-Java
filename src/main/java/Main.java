@@ -77,9 +77,7 @@ public class Main {
         double price = readPositiveDouble(scanner, "Price: ");
         String material = readNonEmptyString(scanner, "Material: ");
         double waistSize = readPositiveDouble(scanner, "Waist size: ");
-        Manufacturer manufacturer = readManufacturer(scanner);
-
-        return new Pants(name, size, price, material, manufacturer, waistSize);
+        return new Pants(name, size, price, material, waistSize);
     }
 
     private static Shirts createShirt(Scanner scanner) {
@@ -88,15 +86,7 @@ public class Main {
         double price = readPositiveDouble(scanner, "Price: ");
         String material = readNonEmptyString(scanner, "Material: ");
         double sleeveLength = readPositiveDouble(scanner, "Sleeve length: ");
-        Manufacturer manufacturer = readManufacturer(scanner);
-
-        return new Shirts(name, size, price, material, manufacturer, sleeveLength);
-    }
-
-    private static Manufacturer readManufacturer(Scanner scanner) {
-        String manufacturerName = readNonEmptyString(scanner, "Manufacturer name: ");
-        String manufacturerCountry = readNonEmptyString(scanner, "Manufacturer country: ");
-        return new Manufacturer(manufacturerName, manufacturerCountry);
+        return new Shirts(name, size, price, material, sleeveLength);
     }
 
     private static String readNonEmptyString(Scanner scanner, String prompt) {
@@ -130,16 +120,6 @@ public class Main {
         }
     }
 
-    private static int readPositiveInt(Scanner scanner, String prompt) {
-        while (true) {
-            int value = readNonNegativeInt(scanner, prompt);
-            if (value == 0) {
-                System.out.println("Error: value must be greater than 0.");
-                continue;
-            }
-            return value;
-        }
-    }
 
     private static double readPositiveDouble(Scanner scanner, String prompt) {
         while (true) {

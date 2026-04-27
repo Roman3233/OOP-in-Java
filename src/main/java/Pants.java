@@ -18,22 +18,6 @@ public class Pants extends Clothes {
         setWaistSize(waistSize);
     }
 
-    /**
-     * Створює об'єкт штанів з інформацією про виробника.
-     *
-     * @param name назва виробу
-     * @param size розмір виробу
-     * @param price ціна виробу
-     * @param material матеріал виробу
-     * @param manufacturer виробник
-     * @param waistSize обхват талії
-     */
-    public Pants(String name, Size size, double price, String material,
-                 Manufacturer manufacturer, double waistSize) {
-        super(name, size, price, material, manufacturer);
-        setWaistSize(waistSize);
-    }
-
     public double getWaistSize() {
         return waistSize;
     }

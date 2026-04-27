@@ -46,8 +46,7 @@ class ClothesTest {
 
     @Test
     void shouldReturnReadableStringRepresentation() {
-        Manufacturer manufacturer = new Manufacturer("Levi's", "USA");
-        Pants pants = new Pants("501", Size.M, 2499.99, "Denim", manufacturer, 82);
+        Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
 
         String result = pants.toString();
 
@@ -55,7 +54,6 @@ class ClothesTest {
         assertTrue(result.contains("size=M"));
         assertTrue(result.contains("price=2499.99"));
         assertTrue(result.contains("material='Denim'"));
-        assertTrue(result.contains("Manufacturer: name='Levi's', country='USA'"));
         assertTrue(result.contains("waistSize=82.0"));
     }
 }

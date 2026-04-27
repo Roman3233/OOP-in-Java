@@ -7,7 +7,6 @@ public abstract class Clothes {
     private Size size;
     private double price;
     private String material;
-    private Manufacturer manufacturer;
 
     /**
      * Створює об'єкт одягу без інформації про виробника.
@@ -24,20 +23,6 @@ public abstract class Clothes {
         setMaterial(material);
     }
 
-    /**
-     * Створює об'єкт одягу з інформацією про виробника.
-     *
-     * @param name назва виробу
-     * @param size розмір виробу
-     * @param price ціна виробу
-     * @param material матеріал виробу
-     * @param manufacturer виробник
-     */
-    public Clothes(String name, Size size, double price, String material, Manufacturer manufacturer) {
-        this(name, size, price, material);
-        setManufacturer(manufacturer);
-    }
-
     public String getName() {
         return name;
     }
@@ -52,10 +37,6 @@ public abstract class Clothes {
 
     public String getMaterial() {
         return material;
-    }
-
-    public Manufacturer getManufacturer() {
-        return manufacturer;
     }
 
     public void setName(String name) {
@@ -80,13 +61,6 @@ public abstract class Clothes {
         this.material = validateTextField(material, "Material");
     }
 
-    public void setManufacturer(Manufacturer manufacturer) {
-        if (manufacturer == null) {
-            throw new IllegalArgumentException("Manufacturer cannot be null.");
-        }
-        this.manufacturer = manufacturer;
-    }
-
     /**
      * Повертає логічну назву типу для об'єкта похідного класу.
      *
@@ -101,12 +75,7 @@ public abstract class Clothes {
                 ", size=" + size +
                 ", price=" + price +
                 ", material='" + material + '\'';
-
-        if (manufacturer == null) {
-            return base;
-        }
-
-        return base + ", " + manufacturer;
+        return base;
     }
 
     @Override
