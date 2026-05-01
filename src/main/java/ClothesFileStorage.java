@@ -1,0 +1,122 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Зберігає об'єкти одягу у текстовому файлі та відновлює їх під час запуску програми.
+ */
+public class ClothesFileStorage {
+    private static final String SEPARATOR = ";";
+
+    private final Path storagePath;
+
+    public ClothesFileStorage(String filePath) {
+        if (filePath == null || filePath.trim().isEmpty()) {
+            throw new IllegalArgumentException("Storage path cannot be null or empty.");
+        }
+
+        try {
+            this.storagePath = Paths.get(filePath.trim());
+        } catch (InvalidPathException e) {
+            throw new IllegalArgumentException("Invalid storage path: " + filePath, e);
+        }
+    }
+
+    public List<Clothes> loadClothes() {
+        if (Files.notExists(storagePath)) {
+            return new ArrayList<>();
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(storagePath, StandardCharsets.UTF_8);
+            List<Clothes> clothesList = new ArrayList<>();
+
+            for (String line : lines) {
+                if (line == null || line.trim().isEmpty()) {
+                    continue;
+                }
+
+                clothesList.add(parseLine(line));
+            }
+
+            return clothesList;
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to read clothes from file: " + storagePath, e);
+        }
+    }
+
+    public void appendClothes(Clothes clothes) {
+        if (clothes == null) {
+            throw new IllegalArgumentException("Clothes cannot be null.");
+        }
+
+        try {
+            Path parent = storagePath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            Files.write(
+                    storagePath,
+                    Collections.singletonList(serialize(clothes)),
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to save clothes to file: " + storagePath, e);
+        }
+    }
+
+    private Clothes parseLine(String line) {
+        String[] parts = line.split(SEPARATOR, -1);
+        if (parts.length != 6) {
+            throw new IllegalArgumentException("Invalid record format: " + line);
+        }
+
+        String type = parts[0];
+        String name = parts[1];
+        Size size = Size.fromString(parts[2]);
+        double price = Double.parseDouble(parts[3]);
+        String material = parts[4];
+        String extraValue = parts[5];
+
+        return switch (type) {
+            case "Pants" -> new Pants(name, size, price, material, Double.parseDouble(extraValue));
+            case "Shirt" -> new Shirts(name, size, price, material, Double.parseDouble(extraValue));
+            case "Jacket" -> new Jacket(name, size, price, material, Integer.parseInt(extraValue));
+            case "Hat" -> new Hat(name, size, price, material, Double.parseDouble(extraValue));
+            default -> throw new IllegalArgumentException("Unknown clothes type: " + type);
+        };
+    }
+
+    private String serialize(Clothes clothes) {
+        List<String> parts = new ArrayList<>();
+        parts.add(clothes.getType());
+        parts.add(clothes.getName());
+        parts.add(clothes.getSize().name());
+        parts.add(String.valueOf(clothes.getPrice()));
+        parts.add(clothes.getMaterial());
+
+        if (clothes instanceof Pants pants) {
+            parts.add(String.valueOf(pants.getWaistSize()));
+        } else if (clothes instanceof Shirts shirts) {
+            parts.add(String.valueOf(shirts.getSleeveLength()));
+        } else if (clothes instanceof Jacket jacket) {
+            parts.add(String.valueOf(jacket.getPocketCount()));
+        } else if (clothes instanceof Hat hat) {
+            parts.add(String.valueOf(hat.getBrimWidth()));
+        } else {
+            throw new IllegalArgumentException("Unsupported clothes type: " + clothes.getClass().getSimpleName());
+        }
+
+        return String.join(SEPARATOR, parts);
+    }
+}

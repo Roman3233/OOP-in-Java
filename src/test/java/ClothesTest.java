@@ -84,7 +84,7 @@ class ClothesTest {
     }
 
     /**
-     * Перевіряє, що {@code toString()} повертає людинозрозумілий рядок з типом і полями об'єкта.
+     * Перевіряє, що {@code toString()} повертає зрозумілий рядок з типом і полями об'єкта.
      */
     @Test
     void shouldReturnReadableStringRepresentation() {

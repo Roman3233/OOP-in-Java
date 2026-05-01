@@ -7,6 +7,9 @@ import java.util.Scanner;
  * Дозволяє створювати об'єкти різних типів і переглядати їх у спільній колекції.
  */
 public class Main {
+    private static final String STORAGE_PATH_PROPERTY = "clothes.storage.path";
+    private static final String DEFAULT_STORAGE_PATH = "input.txt";
+
     /**
      * Запускає консольне меню програми.
      *
@@ -14,7 +17,8 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        List<Clothes> clothesList = new ArrayList<>();
+        ClothesFileStorage storage = new ClothesFileStorage(resolveStoragePath());
+        List<Clothes> clothesList = new ArrayList<>(storage.loadClothes());
 
         boolean running = true;
         while (running) {
@@ -23,12 +27,15 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    createClothesFromSubmenu(scanner, clothesList);
+                    searchClothesFromSubmenu(scanner, clothesList);
                     break;
                 case 2:
-                    printAllClothes(clothesList);
+                    createClothesFromSubmenu(scanner, clothesList, storage);
                     break;
                 case 3:
+                    printAllClothes(clothesList);
+                    break;
+                case 4:
                     running = false;
                     System.out.println("Program finished.");
                     break;
@@ -42,9 +49,10 @@ public class Main {
 
     private static void printMainMenu() {
         System.out.println("\nMain menu:");
-        System.out.println("1. Create new object");
-        System.out.println("2. Show all clothes");
-        System.out.println("3. Exit");
+        System.out.println("1. Search object");
+        System.out.println("2. Create new object");
+        System.out.println("3. Show all clothes");
+        System.out.println("4. Exit");
     }
 
     private static int readMainMenuChoice(Scanner scanner) {
@@ -60,7 +68,47 @@ public class Main {
         System.out.println("0. Return to main menu");
     }
 
-    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList) {
+    private static void printSearchSubmenu() {
+        System.out.println("\nSearch by:");
+        System.out.println("1. Name");
+        System.out.println("2. Size");
+        System.out.println("3. Material");
+        System.out.println("4. Maximum price");
+        System.out.println("0. Return to main menu");
+    }
+
+    private static void searchClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList) {
+        boolean inSubmenu = true;
+
+        while (inSubmenu) {
+            printSearchSubmenu();
+            int choice = readNonNegativeInt(scanner, "Choose search criterion: ");
+
+            switch (choice) {
+                case 1:
+                    searchByName(scanner, clothesList);
+                    break;
+                case 2:
+                    searchBySize(scanner, clothesList);
+                    break;
+                case 3:
+                    searchByMaterial(scanner, clothesList);
+                    break;
+                case 4:
+                    searchByMaximumPrice(scanner, clothesList);
+                    break;
+                case 0:
+                    System.out.println("Returning to main menu.");
+                    inSubmenu = false;
+                    break;
+                default:
+                    System.out.println("Error: unknown menu option.");
+            }
+        }
+    }
+
+    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList,
+                                                 ClothesFileStorage storage) {
         boolean inSubmenu = true;
 
         while (inSubmenu) {
@@ -70,25 +118,25 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("\nCreating pants:");
-                    clothesList.add(createPants(scanner));
+                    addClothes(clothesList, storage, createPants(scanner));
                     System.out.println("Pants added successfully.");
                     inSubmenu = false;
                     break;
                 case 2:
                     System.out.println("\nCreating shirt:");
-                    clothesList.add(createShirt(scanner));
+                    addClothes(clothesList, storage, createShirt(scanner));
                     System.out.println("Shirt added successfully.");
                     inSubmenu = false;
                     break;
                 case 3:
                     System.out.println("\nCreating jacket:");
-                    clothesList.add(createJacket(scanner));
+                    addClothes(clothesList, storage, createJacket(scanner));
                     System.out.println("Jacket added successfully.");
                     inSubmenu = false;
                     break;
                 case 4:
                     System.out.println("\nCreating hat:");
-                    clothesList.add(createHat(scanner));
+                    addClothes(clothesList, storage, createHat(scanner));
                     System.out.println("Hat added successfully.");
                     inSubmenu = false;
                     break;
@@ -102,6 +150,11 @@ public class Main {
         }
     }
 
+    private static void addClothes(List<Clothes> clothesList, ClothesFileStorage storage, Clothes clothes) {
+        clothesList.add(clothes);
+        storage.appendClothes(clothes);
+    }
+
     private static void printAllClothes(List<Clothes> clothesList) {
         if (clothesList.isEmpty()) {
             System.out.println("\nThe clothes list is empty.");
@@ -110,6 +163,94 @@ public class Main {
 
         System.out.println("\nAll clothes:");
         for (Clothes clothes : clothesList) {
+            System.out.println(clothes);
+        }
+    }
+
+    private static void searchByName(Scanner scanner, List<Clothes> clothesList) {
+        String query = readNonEmptyString(scanner, "Enter name to search: ");
+        List<Clothes> foundClothes = findClothesByName(clothesList, query);
+        printSearchResults(foundClothes, "name");
+    }
+
+    private static void searchBySize(Scanner scanner, List<Clothes> clothesList) {
+        Size size = readSize(scanner, "Enter size (XS/S/M/L/XL/XXL): ");
+        List<Clothes> foundClothes = findClothesBySize(clothesList, size);
+        printSearchResults(foundClothes, "size");
+    }
+
+    private static void searchByMaterial(Scanner scanner, List<Clothes> clothesList) {
+        String material = readNonEmptyString(scanner, "Enter material to search: ");
+        List<Clothes> foundClothes = findClothesByMaterial(clothesList, material);
+        printSearchResults(foundClothes, "material");
+    }
+
+    private static void searchByMaximumPrice(Scanner scanner, List<Clothes> clothesList) {
+        double maximumPrice = readPositiveDouble(scanner, "Enter maximum price: ");
+        List<Clothes> foundClothes = findClothesByMaximumPrice(clothesList, maximumPrice);
+        printSearchResults(foundClothes, "maximum price");
+    }
+
+    private static List<Clothes> findClothesByName(List<Clothes> clothesList, String query) {
+        List<Clothes> foundClothes = new ArrayList<>();
+        String normalizedQuery = query.trim().toLowerCase();
+
+        for (Clothes clothes : clothesList) {
+            String normalizedName = clothes.getName().toLowerCase();
+            if (normalizedName.contains(normalizedQuery)) {
+                foundClothes.add(clothes);
+            }
+        }
+
+        return foundClothes;
+    }
+
+    private static List<Clothes> findClothesBySize(List<Clothes> clothesList, Size size) {
+        List<Clothes> foundClothes = new ArrayList<>();
+
+        for (Clothes clothes : clothesList) {
+            if (clothes.getSize() == size) {
+                foundClothes.add(clothes);
+            }
+        }
+
+        return foundClothes;
+    }
+
+    private static List<Clothes> findClothesByMaterial(List<Clothes> clothesList, String material) {
+        List<Clothes> foundClothes = new ArrayList<>();
+        String normalizedMaterial = material.trim().toLowerCase();
+
+        for (Clothes clothes : clothesList) {
+            String currentMaterial = clothes.getMaterial().toLowerCase();
+            if (currentMaterial.contains(normalizedMaterial)) {
+                foundClothes.add(clothes);
+            }
+        }
+
+        return foundClothes;
+    }
+
+    private static List<Clothes> findClothesByMaximumPrice(List<Clothes> clothesList, double maximumPrice) {
+        List<Clothes> foundClothes = new ArrayList<>();
+
+        for (Clothes clothes : clothesList) {
+            if (clothes.getPrice() <= maximumPrice) {
+                foundClothes.add(clothes);
+            }
+        }
+
+        return foundClothes;
+    }
+
+    private static void printSearchResults(List<Clothes> foundClothes, String criterionName) {
+        if (foundClothes.isEmpty()) {
+            System.out.println("\nNo clothes found for the selected " + criterionName + ".");
+            return;
+        }
+
+        System.out.println("\nSearch results:");
+        for (Clothes clothes : foundClothes) {
             System.out.println(clothes);
         }
     }
@@ -208,6 +349,11 @@ public class Main {
             }
         }
     }
+
+    private static String resolveStoragePath() {
+        return System.getProperty(STORAGE_PATH_PROPERTY, DEFAULT_STORAGE_PATH);
+    }
+
     private static int readPocketCount(Scanner scanner, String prompt) {
         while (true) {
             String input = readNonEmptyString(scanner, prompt);
