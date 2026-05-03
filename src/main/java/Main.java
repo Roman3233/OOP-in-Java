@@ -18,7 +18,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ClothesFileStorage storage = new ClothesFileStorage(resolveStoragePath());
-        List<Clothes> clothesList = new ArrayList<>(storage.loadClothes());
+        Store store = new Store("Clothes store");
+        loadStoreFromFile(store, storage.loadClothes());
 
         boolean running = true;
         while (running) {
@@ -27,13 +28,13 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    searchClothesFromSubmenu(scanner, clothesList);
+                    searchClothesFromSubmenu(scanner, store);
                     break;
                 case 2:
-                    createClothesFromSubmenu(scanner, clothesList, storage);
+                    createClothesFromSubmenu(scanner, store, storage);
                     break;
                 case 3:
-                    printAllClothes(clothesList);
+                    printAllClothes(store);
                     break;
                 case 4:
                     running = false;
@@ -77,7 +78,7 @@ public class Main {
         System.out.println("0. Return to main menu");
     }
 
-    private static void searchClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList) {
+    private static void searchClothesFromSubmenu(Scanner scanner, Store store) {
         boolean inSubmenu = true;
 
         while (inSubmenu) {
@@ -86,16 +87,16 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    searchByName(scanner, clothesList);
+                    searchByName(scanner, store);
                     break;
                 case 2:
-                    searchBySize(scanner, clothesList);
+                    searchBySize(scanner, store);
                     break;
                 case 3:
-                    searchByMaterial(scanner, clothesList);
+                    searchByMaterial(scanner, store);
                     break;
                 case 4:
-                    searchByMaximumPrice(scanner, clothesList);
+                    searchByMaximumPrice(scanner, store.getClothes());
                     break;
                 case 0:
                     System.out.println("Returning to main menu.");
@@ -107,7 +108,7 @@ public class Main {
         }
     }
 
-    private static void createClothesFromSubmenu(Scanner scanner, List<Clothes> clothesList,
+    private static void createClothesFromSubmenu(Scanner scanner, Store store,
                                                  ClothesFileStorage storage) {
         boolean inSubmenu = true;
 
@@ -118,25 +119,25 @@ public class Main {
             switch (choice) {
                 case 1:
                     System.out.println("\nCreating pants:");
-                    addClothes(clothesList, storage, createPants(scanner));
+                    addClothes(store, storage, createPants(scanner));
                     System.out.println("Pants added successfully.");
                     inSubmenu = false;
                     break;
                 case 2:
                     System.out.println("\nCreating shirt:");
-                    addClothes(clothesList, storage, createShirt(scanner));
+                    addClothes(store, storage, createShirt(scanner));
                     System.out.println("Shirt added successfully.");
                     inSubmenu = false;
                     break;
                 case 3:
                     System.out.println("\nCreating jacket:");
-                    addClothes(clothesList, storage, createJacket(scanner));
+                    addClothes(store, storage, createJacket(scanner));
                     System.out.println("Jacket added successfully.");
                     inSubmenu = false;
                     break;
                 case 4:
                     System.out.println("\nCreating hat:");
-                    addClothes(clothesList, storage, createHat(scanner));
+                    addClothes(store, storage, createHat(scanner));
                     System.out.println("Hat added successfully.");
                     inSubmenu = false;
                     break;
@@ -150,12 +151,19 @@ public class Main {
         }
     }
 
-    private static void addClothes(List<Clothes> clothesList, ClothesFileStorage storage, Clothes clothes) {
-        clothesList.add(clothes);
+    private static void addClothes(Store store, ClothesFileStorage storage, Clothes clothes) {
+        store.addNewClothes(clothes, 1);
         storage.appendClothes(clothes);
     }
 
-    private static void printAllClothes(List<Clothes> clothesList) {
+    private static void loadStoreFromFile(Store store, List<Clothes> clothesList) {
+        for (Clothes clothes : clothesList) {
+            store.addNewClothes(clothes, 1);
+        }
+    }
+
+    private static void printAllClothes(Store store) {
+        List<Clothes> clothesList = store.getClothes();
         if (clothesList.isEmpty()) {
             System.out.println("\nThe clothes list is empty.");
             return;
@@ -167,21 +175,21 @@ public class Main {
         }
     }
 
-    private static void searchByName(Scanner scanner, List<Clothes> clothesList) {
+    private static void searchByName(Scanner scanner, Store store) {
         String query = readNonEmptyString(scanner, "Enter name to search: ");
-        List<Clothes> foundClothes = findClothesByName(clothesList, query);
+        List<Clothes> foundClothes = store.findClothesByName(query);
         printSearchResults(foundClothes, "name");
     }
 
-    private static void searchBySize(Scanner scanner, List<Clothes> clothesList) {
+    private static void searchBySize(Scanner scanner, Store store) {
         Size size = readSize(scanner, "Enter size (XS/S/M/L/XL/XXL): ");
-        List<Clothes> foundClothes = findClothesBySize(clothesList, size);
+        List<Clothes> foundClothes = store.findClothesBySize(size);
         printSearchResults(foundClothes, "size");
     }
 
-    private static void searchByMaterial(Scanner scanner, List<Clothes> clothesList) {
+    private static void searchByMaterial(Scanner scanner, Store store) {
         String material = readNonEmptyString(scanner, "Enter material to search: ");
-        List<Clothes> foundClothes = findClothesByMaterial(clothesList, material);
+        List<Clothes> foundClothes = store.findClothesByMaterial(material);
         printSearchResults(foundClothes, "material");
     }
 
@@ -189,46 +197,6 @@ public class Main {
         double maximumPrice = readPositiveDouble(scanner, "Enter maximum price: ");
         List<Clothes> foundClothes = findClothesByMaximumPrice(clothesList, maximumPrice);
         printSearchResults(foundClothes, "maximum price");
-    }
-
-    private static List<Clothes> findClothesByName(List<Clothes> clothesList, String query) {
-        List<Clothes> foundClothes = new ArrayList<>();
-        String normalizedQuery = query.trim().toLowerCase();
-
-        for (Clothes clothes : clothesList) {
-            String normalizedName = clothes.getName().toLowerCase();
-            if (normalizedName.contains(normalizedQuery)) {
-                foundClothes.add(clothes);
-            }
-        }
-
-        return foundClothes;
-    }
-
-    private static List<Clothes> findClothesBySize(List<Clothes> clothesList, Size size) {
-        List<Clothes> foundClothes = new ArrayList<>();
-
-        for (Clothes clothes : clothesList) {
-            if (clothes.getSize() == size) {
-                foundClothes.add(clothes);
-            }
-        }
-
-        return foundClothes;
-    }
-
-    private static List<Clothes> findClothesByMaterial(List<Clothes> clothesList, String material) {
-        List<Clothes> foundClothes = new ArrayList<>();
-        String normalizedMaterial = material.trim().toLowerCase();
-
-        for (Clothes clothes : clothesList) {
-            String currentMaterial = clothes.getMaterial().toLowerCase();
-            if (currentMaterial.contains(normalizedMaterial)) {
-                foundClothes.add(clothes);
-            }
-        }
-
-        return foundClothes;
     }
 
     private static List<Clothes> findClothesByMaximumPrice(List<Clothes> clothesList, double maximumPrice) {

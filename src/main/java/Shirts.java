@@ -1,6 +1,8 @@
 /**
  * Представляє сорочку з додатковою властивістю довжини рукава.
  */
+import java.util.Objects;
+
 public class Shirts extends Clothes {
     private double sleeveLength;
 
@@ -51,5 +53,20 @@ public class Shirts extends Clothes {
     @Override
     public String toString() {
         return super.toString() + ", sleeveLength=" + sleeveLength;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        Shirts other = (Shirts) obj;
+        return Double.compare(sleeveLength, other.sleeveLength) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), sleeveLength);
     }
 }

@@ -1,6 +1,8 @@
 /**
  * Представляє штани з додатковою властивістю обхвату талії.
  */
+import java.util.Objects;
+
 public class Pants extends Clothes {
     private double waistSize;
 
@@ -51,5 +53,20 @@ public class Pants extends Clothes {
     @Override
     public String toString() {
         return super.toString() + ", waistSize=" + waistSize;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        Pants other = (Pants) obj;
+        return Double.compare(waistSize, other.waistSize) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), waistSize);
     }
 }

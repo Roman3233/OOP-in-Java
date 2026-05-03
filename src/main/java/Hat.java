@@ -1,6 +1,8 @@
 /**
  * Представляє головний убір з додатковою властивістю ширини полів.
  */
+import java.util.Objects;
+
 public class Hat extends Clothes {
     private double brimWidth;
 
@@ -51,5 +53,20 @@ public class Hat extends Clothes {
     @Override
     public String toString() {
         return super.toString() + ", brimWidth=" + brimWidth;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        Hat other = (Hat) obj;
+        return Double.compare(brimWidth, other.brimWidth) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), brimWidth);
     }
 }
