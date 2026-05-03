@@ -3,12 +3,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.function.Predicate;
 
 public class Store {
     private final String name;
-    private final ArrayList<Clothes> clothes;
-    private final Map<Clothes, Integer> quantities;
+    private final LinkedHashMap<Clothes, Integer> quantities;
 
     public Store(String name) {
         this(name, Collections.emptyList());
@@ -16,7 +15,6 @@ public class Store {
 
     public Store(String name, List<Clothes> clothes) {
         this.name = validateName(name);
-        this.clothes = new ArrayList<>();
         this.quantities = new LinkedHashMap<>();
 
         if (clothes != null) {
@@ -31,7 +29,7 @@ public class Store {
     }
 
     public List<Clothes> getClothes() {
-        return Collections.unmodifiableList(clothes);
+        return Collections.unmodifiableList(new ArrayList<>(quantities.keySet()));
     }
 
     public Map<Clothes, Integer> getQuantities() {
@@ -50,27 +48,12 @@ public class Store {
             throw new IllegalArgumentException("Quantity must be greater than 0.");
         }
 
-        Clothes existingItem = findExistingClothes(item);
-        if (existingItem == null) {
-            clothes.add(item);
-            quantities.put(item, quantity);
-            return;
-        }
-
-        quantities.put(existingItem, quantities.get(existingItem) + quantity);
+        quantities.put(item, quantities.getOrDefault(item, 0) + quantity);
     }
 
     public List<Clothes> findClothesByName(String query) {
         String normalizedQuery = normalizeText(query, "Search query");
-        List<Clothes> foundClothes = new ArrayList<>();
-
-        for (Clothes item : clothes) {
-            if (item.getName().toLowerCase().contains(normalizedQuery)) {
-                foundClothes.add(item);
-            }
-        }
-
-        return foundClothes;
+        return findClothes(item -> item.getName().toLowerCase().contains(normalizedQuery));
     }
 
     public List<Clothes> findClothesBySize(Size size) {
@@ -78,37 +61,32 @@ public class Store {
             throw new IllegalArgumentException("Size cannot be null.");
         }
 
-        List<Clothes> foundClothes = new ArrayList<>();
-        for (Clothes item : clothes) {
-            if (item.getSize() == size) {
-                foundClothes.add(item);
-            }
-        }
-
-        return foundClothes;
+        return findClothes(item -> item.getSize() == size);
     }
 
     public List<Clothes> findClothesByMaterial(String material) {
         String normalizedMaterial = normalizeText(material, "Material");
+        return findClothes(item -> item.getMaterial().toLowerCase().contains(normalizedMaterial));
+    }
+
+    public List<Clothes> findClothesByMaximumPrice(double maximumPrice) {
+        if (maximumPrice <= 0) {
+            throw new IllegalArgumentException("Maximum price must be greater than 0.");
+        }
+
+        return findClothes(item -> item.getPrice() <= maximumPrice);
+    }
+
+    private List<Clothes> findClothes(Predicate<Clothes> filter) {
         List<Clothes> foundClothes = new ArrayList<>();
 
-        for (Clothes item : clothes) {
-            if (item.getMaterial().toLowerCase().contains(normalizedMaterial)) {
+        for (Clothes item : quantities.keySet()) {
+            if (filter.test(item)) {
                 foundClothes.add(item);
             }
         }
 
         return foundClothes;
-    }
-
-    private Clothes findExistingClothes(Clothes item) {
-        for (Clothes currentItem : clothes) {
-            if (Objects.equals(currentItem, item)) {
-                return currentItem;
-            }
-        }
-
-        return null;
     }
 
     private String normalizeText(String value, String fieldName) {
