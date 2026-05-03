@@ -17,6 +17,11 @@ public class ClothesFileStorage {
 
     private final Path storagePath;
 
+    /**
+     * Ініціалізує сховище та перевіряє коректність шляху до файлу.
+     *
+     * @param filePath шлях до файлу, де будуть зберігатися записи про одяг
+     */
     public ClothesFileStorage(String filePath) {
         if (filePath == null || filePath.trim().isEmpty()) {
             throw new IllegalArgumentException("Storage path cannot be null or empty.");
@@ -29,6 +34,12 @@ public class ClothesFileStorage {
         }
     }
 
+    /**
+     * Зчитує всі записи з файлу, перетворює кожен рядок на об'єкт {@code Clothes}
+     * та повертає повний список одягу.
+     *
+     * @return список одягу з файлу або порожній список, якщо файл ще не існує
+     */
     public List<Clothes> loadClothes() {
         if (Files.notExists(storagePath)) {
             return new ArrayList<>();
@@ -52,6 +63,12 @@ public class ClothesFileStorage {
         }
     }
 
+    /**
+     * Додає один об'єкт одягу в кінець файлу збереження.
+     * Якщо батьківської директорії не існує, вона створюється автоматично.
+     *
+     * @param clothes об'єкт одягу, який потрібно зберегти
+     */
     public void appendClothes(Clothes clothes) {
         if (clothes == null) {
             throw new IllegalArgumentException("Clothes cannot be null.");
@@ -75,6 +92,12 @@ public class ClothesFileStorage {
         }
     }
 
+    /**
+     * Розбирає один рядок із файлу та створює відповідний об'єкт конкретного типу одягу.
+     *
+     * @param line рядок із серіалізованими даними
+     * @return створений об'єкт одягу
+     */
     private Clothes parseLine(String line) {
         String[] parts = line.split(SEPARATOR, -1);
         if (parts.length != 6) {
@@ -97,6 +120,13 @@ public class ClothesFileStorage {
         };
     }
 
+    /**
+     * Перетворює об'єкт одягу на рядок для збереження у файлі.
+     * У результат додаються як спільні поля, так і специфічна характеристика типу.
+     *
+     * @param clothes об'єкт одягу для серіалізації
+     * @return текстове представлення об'єкта для запису у файл
+     */
     private String serialize(Clothes clothes) {
         List<String> parts = new ArrayList<>();
         parts.add(clothes.getType());
