@@ -4,7 +4,7 @@
  */
 import java.util.Objects;
 
-public abstract class Clothes {
+public abstract class Clothes implements Comparable<Clothes> {
     private String name;
     private Size size;
     private double price;
@@ -115,6 +115,48 @@ public abstract class Clothes {
      * @return назва типу одягу
      */
     public abstract String getType();
+
+    /**
+     * Порівнює специфічні поля нащадка після порівняння спільних полів базового класу.
+     *
+     * @param other інший об'єкт одягу того самого типу
+     * @return від'ємне число, нуль або додатне число
+     */
+    protected abstract int compareSpecificFields(Clothes other);
+
+    @Override
+    public int compareTo(Clothes other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Compared clothes cannot be null.");
+        }
+
+        int typeComparison = getType().compareTo(other.getType());
+        if (typeComparison != 0) {
+            return typeComparison;
+        }
+
+        int nameComparison = name.compareTo(other.name);
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+
+        int sizeComparison = size.compareTo(other.size);
+        if (sizeComparison != 0) {
+            return sizeComparison;
+        }
+
+        int priceComparison = Double.compare(price, other.price);
+        if (priceComparison != 0) {
+            return priceComparison;
+        }
+
+        int materialComparison = material.compareTo(other.material);
+        if (materialComparison != 0) {
+            return materialComparison;
+        }
+
+        return compareSpecificFields(other);
+    }
 
     @Override
     public String toString() {

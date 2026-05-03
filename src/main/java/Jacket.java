@@ -54,6 +54,12 @@ public class Jacket extends Clothes {
     }
 
     @Override
+    protected int compareSpecificFields(Clothes other) {
+        Jacket otherJacket = (Jacket) other;
+        return Integer.compare(pocketCount, otherJacket.pocketCount);
+    }
+
+    @Override
     public String toString() {
         return super.toString() + ", pocketCount=" + pocketCount;
     }
