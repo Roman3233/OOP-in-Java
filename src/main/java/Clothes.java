@@ -2,6 +2,8 @@
  * Базовий абстрактний клас для всіх видів одягу в застосунку.
  * Містить спільні властивості, які успадковують похідні класи.
  */
+import java.util.Objects;
+
 public abstract class Clothes {
     private String name;
     private Size size;
@@ -136,6 +138,11 @@ public abstract class Clothes {
                 size == other.size &&
                 price == other.price &&
                 material.equals(other.material);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getClass(), name, size, price, material);
     }
 
     private String validateTextField(String value, String fieldName) {

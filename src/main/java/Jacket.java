@@ -1,6 +1,8 @@
 /**
  * Представляє куртку з додатковою властивістю кількості кишень.
  */
+import java.util.Objects;
+
 public class Jacket extends Clothes {
     private int pocketCount;
 
@@ -54,5 +56,20 @@ public class Jacket extends Clothes {
     @Override
     public String toString() {
         return super.toString() + ", pocketCount=" + pocketCount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        Jacket other = (Jacket) obj;
+        return pocketCount == other.pocketCount;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pocketCount);
     }
 }
