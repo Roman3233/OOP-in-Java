@@ -150,11 +150,13 @@ class MainTest {
 
         String input = String.join(System.lineSeparator(),
                 "4",
+                "1",
                 "5"
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
 
+        assertTrue(output.contains("Choose sorting criterion:"));
         assertTrue(output.contains("All clothes sorted by name:"));
         assertTrue(output.contains("Hat: name='Safari'"));
         assertTrue(output.contains("Program finished."));
@@ -173,7 +175,12 @@ class MainTest {
                 StandardCharsets.UTF_8
         );
 
-        String output = runMainAndCaptureOutput("4" + System.lineSeparator() + "5" + System.lineSeparator(), storageFile);
+        String output = runMainAndCaptureOutput(
+                "4" + System.lineSeparator() +
+                        "1" + System.lineSeparator() +
+                        "5" + System.lineSeparator(),
+                storageFile
+        );
 
         int alphaIndex = output.indexOf("Hat: name='Alpha'");
         int bravoIndex = output.indexOf("Pants: name='Bravo'");
@@ -204,6 +211,8 @@ class MainTest {
                 "-1", // invalid waist size
                 "82",
                 "4", // print sorted list
+                "9", // invalid sorting criterion
+                "1",
                 "5"  // exit
         ) + System.lineSeparator();
 
@@ -216,6 +225,7 @@ class MainTest {
         assertTrue(output.contains("Error: please enter a valid number."));
         assertTrue(output.contains("Error: value must be greater than 0."));
         assertTrue(output.contains("Pants added successfully."));
+        assertTrue(output.contains("Choose sorting criterion:"));
         assertTrue(output.contains("All clothes sorted by name:"));
         assertTrue(output.contains("Pants: name='501'"));
         assertTrue(output.contains("Program finished."));
