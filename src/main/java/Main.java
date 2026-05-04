@@ -36,6 +36,9 @@ public class Main {
                     printAllClothes(storeService);
                     break;
                 case 4:
+                    printSortedClothes(storeService);
+                    break;
+                case 5:
                     running = false;
                     System.out.println("Program finished.");
                     break;
@@ -52,10 +55,14 @@ public class Main {
         System.out.println("1. Search object");
         System.out.println("2. Create new object");
         System.out.println("3. Show all clothes");
-        System.out.println("4. Exit");
+        System.out.println("4. Show all clothes sorted by name");
+        System.out.println("5. Exit");
     }
 
     private static int readMainMenuChoice(Scanner scanner) {
+        if (!scanner.hasNextLine()) {
+            return 5;
+        }
         return readNonNegativeInt(scanner, "Choose an option: ");
     }
 
@@ -157,6 +164,19 @@ public class Main {
         }
 
         System.out.println("\nAll clothes:");
+        for (Clothes clothes : clothesList) {
+            System.out.println(clothes);
+        }
+    }
+
+    private static void printSortedClothes(StoreService storeService) {
+        List<Clothes> clothesList = storeService.getAllClothesSorted();
+        if (clothesList.isEmpty()) {
+            System.out.println("\nThe clothes list is empty.");
+            return;
+        }
+
+        System.out.println("\nAll clothes sorted by name:");
         for (Clothes clothes : clothesList) {
             System.out.println(clothes);
         }

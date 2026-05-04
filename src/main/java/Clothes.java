@@ -130,14 +130,14 @@ public abstract class Clothes implements Comparable<Clothes> {
             throw new IllegalArgumentException("Compared clothes cannot be null.");
         }
 
-        int typeComparison = getType().compareTo(other.getType());
-        if (typeComparison != 0) {
-            return typeComparison;
-        }
-
         int nameComparison = name.compareTo(other.name);
         if (nameComparison != 0) {
             return nameComparison;
+        }
+
+        int typeComparison = getType().compareTo(other.getType());
+        if (typeComparison != 0) {
+            return typeComparison;
         }
 
         int sizeComparison = size.compareTo(other.size);
