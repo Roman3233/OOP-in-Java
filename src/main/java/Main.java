@@ -58,7 +58,7 @@ public class Main {
         System.out.println("1. Search object");
         System.out.println("2. Create new object");
         System.out.println("3. Show all clothes");
-        System.out.println("4. Show all clothes sorted by name");
+        System.out.println("4. Sort by");
         System.out.println("5. Exit");
     }
 
