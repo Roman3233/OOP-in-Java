@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -28,7 +29,7 @@ class MainTest {
         Path storageFile = Files.createTempFile("clothes-main-empty", ".txt");
         String input = String.join(System.lineSeparator(),
                 "3", // show all clothes (empty)
-                "4"  // exit
+                "5"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -53,7 +54,7 @@ class MainTest {
                 "Denim", // material
                 "82", // waist size
                 "3", // show all clothes
-                "4"  // exit
+                "5"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -76,7 +77,7 @@ class MainTest {
 
         String input = String.join(System.lineSeparator(),
                 "3",
-                "4"
+                "5"
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -104,7 +105,7 @@ class MainTest {
                 "denim",
                 "0", // return to main menu
                 "3", // show all clothes
-                "4"  // exit
+                "5"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -129,12 +130,94 @@ class MainTest {
                 "2", // search by size
                 "XS",
                 "0", // return to main menu
-                "4"  // exit
+                "5"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
 
         assertTrue(output.contains("No clothes found for the selected size."));
+        assertTrue(output.contains("Program finished."));
+    }
+
+    @Test
+    void shouldPrintSortedClothesForSingleElement() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sorted-single", ".txt");
+        Files.writeString(
+                storageFile,
+                "Hat;Safari;M;899.99;Cotton;9.0" + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String input = String.join(System.lineSeparator(),
+                "4",
+                "5"
+        ) + System.lineSeparator();
+
+        String output = runMainAndCaptureOutput(input, storageFile);
+
+        assertTrue(output.contains("All clothes sorted by name:"));
+        assertTrue(output.contains("Hat: name='Safari'"));
+        assertTrue(output.contains("Program finished."));
+    }
+
+    @Test
+    void shouldPrintSortedClothesForMultipleElementsInAscendingNameOrder() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sorted-multiple", ".txt");
+        Files.writeString(
+                storageFile,
+                String.join(System.lineSeparator(),
+                        "Jacket;Zulu;L;3999.99;Leather;4",
+                        "Hat;Alpha;M;899.99;Cotton;9.0",
+                        "Pants;Bravo;S;2499.99;Denim;82.0"
+                ) + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String output = runMainAndCaptureOutput("4" + System.lineSeparator() + "5" + System.lineSeparator(), storageFile);
+
+        int alphaIndex = output.indexOf("Hat: name='Alpha'");
+        int bravoIndex = output.indexOf("Pants: name='Bravo'");
+        int zuluIndex = output.indexOf("Jacket: name='Zulu'");
+
+        assertTrue(output.contains("All clothes sorted by name:"));
+        assertTrue(alphaIndex >= 0);
+        assertTrue(bravoIndex > alphaIndex);
+        assertTrue(zuluIndex > bravoIndex);
+    }
+
+    @Test
+    void shouldRecoverFromInvalidInputWithoutCrashing() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-invalid-input", ".txt");
+        String input = String.join(System.lineSeparator(),
+                "abc", // invalid main menu choice
+                "2", // create new object
+                "9", // invalid clothes type
+                "1", // pants
+                "", // invalid name
+                "501",
+                "wrong-size", // invalid size
+                "M",
+                "not-a-number", // invalid price
+                "2499.99",
+                "", // invalid material
+                "Denim",
+                "-1", // invalid waist size
+                "82",
+                "4", // print sorted list
+                "5"  // exit
+        ) + System.lineSeparator();
+
+        String output = assertDoesNotThrow(() -> runMainAndCaptureOutput(input, storageFile));
+
+        assertTrue(output.contains("Error: please enter a valid integer."));
+        assertTrue(output.contains("Error: unknown menu option."));
+        assertTrue(output.contains("Error: input cannot be empty."));
+        assertTrue(output.contains("Error: Invalid size. Allowed: XS, S, M, L, XL, XXL."));
+        assertTrue(output.contains("Error: please enter a valid number."));
+        assertTrue(output.contains("Error: value must be greater than 0."));
+        assertTrue(output.contains("Pants added successfully."));
+        assertTrue(output.contains("All clothes sorted by name:"));
+        assertTrue(output.contains("Pants: name='501'"));
         assertTrue(output.contains("Program finished."));
     }
 

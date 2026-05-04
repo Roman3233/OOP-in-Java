@@ -51,6 +51,12 @@ public class Pants extends Clothes {
     }
 
     @Override
+    protected int compareSpecificFields(Clothes other) {
+        Pants otherPants = (Pants) other;
+        return Double.compare(waistSize, otherPants.waistSize);
+    }
+
+    @Override
     public String toString() {
         return super.toString() + ", waistSize=" + waistSize;
     }

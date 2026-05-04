@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,6 +63,20 @@ class StoreServiceTest {
         assertEquals(1, storeService.findClothesBySize(Size.L).size());
         assertEquals(1, storeService.findClothesByMaterial("cot").size());
         assertEquals(1, storeService.findClothesByMaximumPrice(1000).size());
+    }
+
+    @Test
+    void shouldReturnClothesSortedByNaturalOrder() throws IOException {
+        Path storageFile = Files.createTempFile("store-service-sorted", ".txt");
+        Hat alpha = new Hat("Alpha", Size.M, 899.99, "Cotton", 9);
+        Pants bravo = new Pants("Bravo", Size.S, 2499.99, "Denim", 82);
+        Jacket zulu = new Jacket("Zulu", Size.L, 3999.99, "Leather", 4);
+        Store store = new Store("My store", List.of(zulu, alpha, bravo));
+        StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
+
+        List<Clothes> sortedClothes = storeService.getAllClothesSorted();
+
+        assertIterableEquals(List.of(alpha, bravo, zulu), sortedClothes);
     }
 
     @Test

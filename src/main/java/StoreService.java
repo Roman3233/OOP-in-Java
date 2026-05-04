@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,6 +57,17 @@ public class StoreService {
      */
     public List<Clothes> getAllClothes() {
         return store.getClothes();
+    }
+
+    /**
+     * Повертає всі позиції одягу, відсортовані за природним порядком.
+     *
+     * @return відсортований список одягу
+     */
+    public List<Clothes> getAllClothesSorted() {
+        List<Clothes> sortedClothes = new ArrayList<>(store.getClothes());
+        Collections.sort(sortedClothes);
+        return sortedClothes;
     }
 
     /**

@@ -51,6 +51,12 @@ public class Hat extends Clothes {
     }
 
     @Override
+    protected int compareSpecificFields(Clothes other) {
+        Hat otherHat = (Hat) other;
+        return Double.compare(brimWidth, otherHat.brimWidth);
+    }
+
+    @Override
     public String toString() {
         return super.toString() + ", brimWidth=" + brimWidth;
     }
