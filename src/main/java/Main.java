@@ -17,8 +17,19 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ClothesFileStorage storage = new ClothesFileStorage(resolveStoragePath());
-        StoreService storeService = new StoreService(new Store("Clothes store"), storage);
+        ClothesDao clothesDao = resolveClothesDao(args);
+        StoreService storeService = new StoreService(
+                new Store("Clothes store"),
+                storage,
+                clothesDao
+        );
         storeService.loadFromStorage();
+
+        if (clothesDao == null) {
+            System.out.println("Database insert is disabled. Pass db.properties as the first program argument.");
+        } else {
+            System.out.println("Database insert is enabled.");
+        }
 
         boolean running = true;
         while (running) {
@@ -295,6 +306,14 @@ public class Main {
 
     private static String resolveStoragePath() {
         return System.getProperty(STORAGE_PATH_PROPERTY, DEFAULT_STORAGE_PATH);
+    }
+
+    private static ClothesDao resolveClothesDao(String[] args) {
+        if (args == null || args.length == 0 || args[0] == null || args[0].trim().isEmpty()) {
+            return null;
+        }
+
+        return new ClothesDao(new DBConnection(args[0]));
     }
 
     private static int readPocketCount(Scanner scanner, String prompt) {

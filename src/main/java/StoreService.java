@@ -8,6 +8,7 @@ import java.util.List;
 public class StoreService {
     private final Store store;
     private final ClothesFileStorage storage;
+    private final ClothesDao clothesDao;
 
     /**
      * Створює сервіс з потрібними залежностями.
@@ -17,6 +18,10 @@ public class StoreService {
      * @throws IllegalArgumentException якщо будь-яка залежність дорівнює {@code null}
      */
     public StoreService(Store store, ClothesFileStorage storage) {
+        this(store, storage, null);
+    }
+
+    public StoreService(Store store, ClothesFileStorage storage, ClothesDao clothesDao) {
         if (store == null) {
             throw new IllegalArgumentException("Store cannot be null.");
         }
@@ -26,6 +31,7 @@ public class StoreService {
 
         this.store = store;
         this.storage = storage;
+        this.clothesDao = clothesDao;
     }
 
     /**
@@ -46,6 +52,9 @@ public class StoreService {
     public void addClothes(Clothes clothes) {
         store.addNewClothes(clothes, 1);
         storage.appendClothes(clothes);
+        if (clothesDao != null) {
+            clothesDao.insert(clothes);
+        }
     }
 
     /**
