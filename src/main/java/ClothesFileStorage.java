@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -80,9 +79,16 @@ public class ClothesFileStorage {
                 Files.createDirectories(parent);
             }
 
-            Files.write(
+            String serializedClothes = serialize(clothes) + System.lineSeparator();
+            String prefix = "";
+
+            if (Files.exists(storagePath) && Files.size(storagePath) > 0) {
+                prefix = needsLeadingLineSeparator() ? System.lineSeparator() : "";
+            }
+
+            Files.writeString(
                     storagePath,
-                    Collections.singletonList(serialize(clothes)),
+                    prefix + serializedClothes,
                     StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
@@ -148,5 +154,15 @@ public class ClothesFileStorage {
         }
 
         return String.join(SEPARATOR, parts);
+    }
+
+    private boolean needsLeadingLineSeparator() throws IOException {
+        byte[] fileBytes = Files.readAllBytes(storagePath);
+        if (fileBytes.length == 0) {
+            return false;
+        }
+
+        byte lastByte = fileBytes[fileBytes.length - 1];
+        return lastByte != '\n' && lastByte != '\r';
     }
 }
