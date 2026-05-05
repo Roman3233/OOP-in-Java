@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,7 +39,7 @@ public class Main {
                     printAllClothes(storeService);
                     break;
                 case 4:
-                    printSortedClothes(storeService);
+                    printSortedClothesFromSubmenu(scanner, storeService);
                     break;
                 case 5:
                     running = false;
@@ -55,7 +58,7 @@ public class Main {
         System.out.println("1. Search object");
         System.out.println("2. Create new object");
         System.out.println("3. Show all clothes");
-        System.out.println("4. Show all clothes sorted by name");
+        System.out.println("4. Sort by");
         System.out.println("5. Exit");
     }
 
@@ -81,6 +84,14 @@ public class Main {
         System.out.println("2. Size");
         System.out.println("3. Material");
         System.out.println("4. Maximum price");
+        System.out.println("0. Return to main menu");
+    }
+
+    private static void printSortSubmenu() {
+        System.out.println("\nChoose sorting criterion:");
+        System.out.println("1. Sort by name");
+        System.out.println("2. Sort by price");
+        System.out.println("3. Sort by size");
         System.out.println("0. Return to main menu");
     }
 
@@ -169,14 +180,61 @@ public class Main {
         }
     }
 
-    private static void printSortedClothes(StoreService storeService) {
-        List<Clothes> clothesList = storeService.getAllClothesSorted();
+    private static void printSortedClothesFromSubmenu(Scanner scanner, StoreService storeService) {
+        boolean inSubmenu = true;
+
+        while (inSubmenu) {
+            printSortSubmenu();
+            int choice = readNonNegativeInt(scanner, "Choose sorting criterion: ");
+
+            switch (choice) {
+                case 1:
+                    printSortedClothes(storeService, new Comparator<Clothes>() {
+                        @Override
+                        public int compare(Clothes first, Clothes second) {
+                            return first.getName().compareTo(second.getName());
+                        }
+                    }, "name");
+                    inSubmenu = false;
+                    break;
+                case 2:
+                    printSortedClothes(storeService, new Comparator<Clothes>() {
+                        @Override
+                        public int compare(Clothes first, Clothes second) {
+                            return Double.compare(first.getPrice(), second.getPrice());
+                        }
+                    }, "price");
+                    inSubmenu = false;
+                    break;
+                case 3:
+                    printSortedClothes(storeService, new Comparator<Clothes>() {
+                        @Override
+                        public int compare(Clothes first, Clothes second) {
+                            return first.getSize().compareTo(second.getSize());
+                        }
+                    }, "size");
+                    inSubmenu = false;
+                    break;
+                case 0:
+                    System.out.println("Returning to main menu.");
+                    inSubmenu = false;
+                    break;
+                default:
+                    System.out.println("Error: unknown menu option.");
+            }
+        }
+    }
+
+    private static void printSortedClothes(StoreService storeService, Comparator<Clothes> comparator, String criterionName) {
+        List<Clothes> clothesList = new ArrayList<>(storeService.getAllClothes());
         if (clothesList.isEmpty()) {
             System.out.println("\nThe clothes list is empty.");
             return;
         }
 
-        System.out.println("\nAll clothes sorted by name:");
+        Collections.sort(clothesList, comparator);
+
+        System.out.println("\nAll clothes sorted by " + criterionName + ":");
         for (Clothes clothes : clothesList) {
             System.out.println(clothes);
         }
