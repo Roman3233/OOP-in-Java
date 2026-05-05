@@ -98,7 +98,8 @@ class MainTest {
         String output = runMainAndCaptureOutput(input, storageFile);
 
         assertTrue(output.contains("All clothes:"));
-        assertTrue(output.contains("Pants: name='501'"));
+        assertTrue(output.contains("Pants: uuid="));
+        assertTrue(output.contains("name='501'"));
         assertTrue(output.contains("waistSize=82.0"));
         assertTrue(output.contains("Program finished."));
         assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8).contains("Pants;501;M;2499.99;Denim;82.0"));
@@ -121,7 +122,8 @@ class MainTest {
         String output = runMainAndCaptureOutput(input, storageFile);
 
         assertTrue(output.contains("All clothes:"));
-        assertTrue(output.contains("Hat: name='Safari'"));
+        assertTrue(output.contains("Hat: uuid="));
+        assertTrue(output.contains("name='Safari'"));
         assertTrue(output.contains("brimWidth=9.0"));
     }
 
@@ -149,9 +151,11 @@ class MainTest {
         String output = runMainAndCaptureOutput(input, storageFile);
 
         assertTrue(output.contains("Search results:"));
-        assertTrue(output.contains("Pants: name='501'"));
+        assertTrue(output.contains("Pants: uuid="));
+        assertTrue(output.contains("name='501'"));
         assertTrue(output.contains("All clothes:"));
-        assertTrue(output.contains("Hat: name='Safari'"));
+        assertTrue(output.contains("Hat: uuid="));
+        assertTrue(output.contains("name='Safari'"));
     }
 
     @Test
@@ -178,6 +182,46 @@ class MainTest {
     }
 
     @Test
+    void shouldHandleSearchByUuidWhenItemIsNotFound() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-search-uuid-not-found", ".txt");
+        Files.writeString(
+                storageFile,
+                "Jacket;Storm;XL;3999.99;Leather;4" + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String input = String.join(System.lineSeparator(),
+                "1",
+                "5",
+                "123e4567-e89b-12d3-a456-426614174000",
+                "0",
+                "5"
+        ) + System.lineSeparator();
+
+        String output = runMainAndCaptureOutput(input, storageFile);
+
+        assertTrue(output.contains("No clothes found for the selected UUID."));
+        assertTrue(output.contains("Program finished."));
+    }
+
+    @Test
+    void shouldHandleInvalidUuidFormatWithoutCrashing() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-search-uuid-invalid", ".txt");
+        String input = String.join(System.lineSeparator(),
+                "1",
+                "5",
+                "not-a-uuid",
+                "0",
+                "5"
+        ) + System.lineSeparator();
+
+        String output = assertDoesNotThrow(() -> runMainAndCaptureOutput(input, storageFile));
+
+        assertTrue(output.contains("Error: invalid UUID format."));
+        assertTrue(output.contains("Program finished."));
+    }
+
+    @Test
     void shouldPrintSortedClothesForSingleElement() throws IOException {
         Path storageFile = Files.createTempFile("clothes-main-sorted-single", ".txt");
         Files.writeString(
@@ -196,7 +240,8 @@ class MainTest {
 
         assertTrue(output.contains("Choose sorting criterion:"));
         assertTrue(output.contains("All clothes sorted by name:"));
-        assertTrue(output.contains("Hat: name='Safari'"));
+        assertTrue(output.contains("Hat: uuid="));
+        assertTrue(output.contains("name='Safari'"));
         assertTrue(output.contains("Program finished."));
     }
 
@@ -220,9 +265,9 @@ class MainTest {
                 storageFile
         );
 
-        int alphaIndex = output.indexOf("Hat: name='Alpha'");
-        int bravoIndex = output.indexOf("Pants: name='Bravo'");
-        int zuluIndex = output.indexOf("Jacket: name='Zulu'");
+        int alphaIndex = output.indexOf("name='Alpha'");
+        int bravoIndex = output.indexOf("name='Bravo'");
+        int zuluIndex = output.indexOf("name='Zulu'");
 
         assertTrue(output.contains("All clothes sorted by name:"));
         assertTrue(alphaIndex >= 0);
@@ -250,9 +295,9 @@ class MainTest {
                 storageFile
         );
 
-        int hatIndex = output.indexOf("Hat: name='Safari'");
-        int pantsIndex = output.indexOf("Pants: name='501'");
-        int jacketIndex = output.indexOf("Jacket: name='Storm'");
+        int hatIndex = output.indexOf("name='Safari'");
+        int pantsIndex = output.indexOf("name='501'");
+        int jacketIndex = output.indexOf("name='Storm'");
 
         assertTrue(output.contains("All clothes sorted by price:"));
         assertTrue(hatIndex >= 0);
@@ -280,9 +325,9 @@ class MainTest {
                 storageFile
         );
 
-        int sizeSIndex = output.indexOf("Pants: name='501'");
-        int sizeMIndex = output.indexOf("Jacket: name='Storm'");
-        int sizeXLIndex = output.indexOf("Hat: name='Safari'");
+        int sizeSIndex = output.indexOf("name='501'");
+        int sizeMIndex = output.indexOf("name='Storm'");
+        int sizeXLIndex = output.indexOf("name='Safari'");
 
         assertTrue(output.contains("All clothes sorted by size:"));
         assertTrue(sizeSIndex >= 0);
@@ -310,9 +355,9 @@ class MainTest {
                 storageFile
         );
 
-        int firstIndex = output.indexOf("Hat: name='First'");
-        int secondIndex = output.indexOf("Pants: name='Second'");
-        int thirdIndex = output.indexOf("Jacket: name='Third'");
+        int firstIndex = output.indexOf("name='First'");
+        int secondIndex = output.indexOf("name='Second'");
+        int thirdIndex = output.indexOf("name='Third'");
 
         assertTrue(output.contains("All clothes sorted by price:"));
         assertTrue(firstIndex >= 0);
@@ -355,7 +400,8 @@ class MainTest {
         assertTrue(output.contains("Pants added successfully."));
         assertTrue(output.contains("Choose sorting criterion:"));
         assertTrue(output.contains("All clothes sorted by name:"));
-        assertTrue(output.contains("Pants: name='501'"));
+        assertTrue(output.contains("Pants: uuid="));
+        assertTrue(output.contains("name='501'"));
         assertTrue(output.contains("Program finished."));
     }
 

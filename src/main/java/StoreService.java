@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Сервісний шар для роботи з магазином: завантаження/збереження одягу та операції пошуку.
@@ -108,5 +109,15 @@ public class StoreService {
      */
     public List<Clothes> findClothesByMaximumPrice(double maximumPrice) {
         return store.findClothesByMaximumPrice(maximumPrice);
+    }
+
+    /**
+     * Пошук одягу за UUID.
+     *
+     * @param uuid UUID об'єкта
+     * @return знайдений об'єкт або {@code null}, якщо його немає
+     */
+    public Clothes findClothesByUuid(UUID uuid) {
+        return store.findClothesByUuid(uuid);
     }
 }

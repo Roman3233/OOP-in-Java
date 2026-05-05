@@ -170,7 +170,8 @@ public abstract class Clothes implements Comparable<Clothes>, Identifiable {
     public String toString() {
 
         String base =
-                "name='" + name + '\'' +
+                "uuid=" + uuid +
+                ", name='" + name + '\'' +
                 ", size=" + size +
                 ", price=" + price +
                 ", material='" + material + '\'';

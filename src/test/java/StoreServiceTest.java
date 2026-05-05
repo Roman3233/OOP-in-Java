@@ -5,9 +5,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,16 +55,17 @@ class StoreServiceTest {
     @Test
     void shouldDelegateSearchesToStore() throws IOException {
         Path storageFile = Files.createTempFile("store-service-search", ".txt");
-        Store store = new Store("My store", List.of(
-                new Pants("501", Size.M, 2499.99, "Denim", 82),
-                new Hat("Safari", Size.L, 899.99, "Cotton", 9)
-        ));
+        Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        Hat hat = new Hat("Safari", Size.L, 899.99, "Cotton", 9);
+        Store store = new Store("My store", List.of(pants, hat));
         StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
 
         assertEquals(1, storeService.findClothesByName("501").size());
         assertEquals(1, storeService.findClothesBySize(Size.L).size());
         assertEquals(1, storeService.findClothesByMaterial("cot").size());
         assertEquals(1, storeService.findClothesByMaximumPrice(1000).size());
+        assertEquals(hat, storeService.findClothesByUuid(hat.getUuid()));
+        assertNull(storeService.findClothesByUuid(UUID.randomUUID()));
     }
 
     @Test

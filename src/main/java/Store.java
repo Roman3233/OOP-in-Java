@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 /**
@@ -145,6 +146,27 @@ public class Store {
         }
 
         return findClothes(item -> item.getPrice() <= maximumPrice);
+    }
+
+    /**
+     * Пошук одягу за UUID.
+     *
+     * @param uuid UUID об'єкта
+     * @return знайдений об'єкт або {@code null}, якщо його немає
+     * @throws IllegalArgumentException якщо {@code uuid} є {@code null}
+     */
+    public Clothes findClothesByUuid(UUID uuid) {
+        if (uuid == null) {
+            throw new IllegalArgumentException("UUID cannot be null.");
+        }
+
+        for (Clothes item : quantities.keySet()) {
+            if (item.getUuid().equals(uuid)) {
+                return item;
+            }
+        }
+
+        return null;
     }
 
     private List<Clothes> findClothes(Predicate<Clothes> filter) {

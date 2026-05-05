@@ -96,14 +96,17 @@ class ClothesTest {
         String jacketResult = jacket.toString();
         String hatResult = hat.toString();
 
-        assertTrue(result.contains("Pants: name='501'"));
+        assertTrue(result.contains("Pants: uuid="));
+        assertTrue(result.contains("name='501'"));
         assertTrue(result.contains("size=M"));
         assertTrue(result.contains("price=2499.99"));
         assertTrue(result.contains("material='Denim'"));
         assertTrue(result.contains("waistSize=82.0"));
-        assertTrue(jacketResult.contains("Jacket: name='Storm'"));
+        assertTrue(jacketResult.contains("Jacket: uuid="));
+        assertTrue(jacketResult.contains("name='Storm'"));
         assertTrue(jacketResult.contains("pocketCount=7"));
-        assertTrue(hatResult.contains("Hat: name='Safari'"));
+        assertTrue(hatResult.contains("Hat: uuid="));
+        assertTrue(hatResult.contains("name='Safari'"));
         assertTrue(hatResult.contains("brimWidth=9.0"));
     }
 }

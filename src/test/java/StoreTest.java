@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StoreTest {
@@ -41,6 +43,8 @@ class StoreTest {
         assertEquals(List.of(pants), bySize);
         assertEquals(List.of(jacket), byMaterial);
         assertEquals(List.of(hat), byPrice);
+        assertEquals(hat, store.findClothesByUuid(hat.getUuid()));
+        assertNull(store.findClothesByUuid(UUID.randomUUID()));
     }
 
     @Test
@@ -68,5 +72,6 @@ class StoreTest {
         assertThrows(IllegalArgumentException.class, () -> store.findClothesBySize(null));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesByMaterial(null));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesByMaximumPrice(0));
+        assertThrows(IllegalArgumentException.class, () -> store.findClothesByUuid(null));
     }
 }

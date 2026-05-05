@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 /**
  * Драйвер застосунку з консольним меню для роботи з об'єктами одягу.
@@ -84,6 +85,7 @@ public class Main {
         System.out.println("2. Size");
         System.out.println("3. Material");
         System.out.println("4. Maximum price");
+        System.out.println("5. UUID");
         System.out.println("0. Return to main menu");
     }
 
@@ -114,6 +116,9 @@ public class Main {
                     break;
                 case 4:
                     searchByMaximumPrice(scanner, storeService);
+                    break;
+                case 5:
+                    searchByUuid(scanner, storeService);
                     break;
                 case 0:
                     System.out.println("Returning to main menu.");
@@ -259,6 +264,25 @@ public class Main {
         double maximumPrice = readPositiveDouble(scanner, "Enter maximum price: ");
         List<Clothes> foundClothes = storeService.findClothesByMaximumPrice(maximumPrice);
         printSearchResults(foundClothes, "maximum price");
+    }
+
+    private static void searchByUuid(Scanner scanner, StoreService storeService) {
+        String uuidInput = readNonEmptyString(scanner, "Enter UUID to search: ");
+
+        try {
+            UUID uuid = UUID.fromString(uuidInput);
+            Clothes foundClothes = storeService.findClothesByUuid(uuid);
+
+            if (foundClothes == null) {
+                System.out.println("\nNo clothes found for the selected UUID.");
+                return;
+            }
+
+            System.out.println("\nSearch results:");
+            System.out.println(foundClothes);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: invalid UUID format.");
+        }
     }
 
     private static void printSearchResults(List<Clothes> foundClothes, String criterionName) {
