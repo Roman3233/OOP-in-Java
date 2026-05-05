@@ -156,6 +156,13 @@ public class ClothesFileStorage {
         return String.join(SEPARATOR, parts);
     }
 
+    /**
+     * Перевіряє, чи потрібно додати розділювач рядків перед новим записом.
+     * Це потрібно, якщо файл уже містить дані, але не закінчується символом нового рядка.
+     *
+     * @return {@code true}, якщо перед новим записом потрібен перенос рядка
+     * @throws IOException якщо не вдалося прочитати файл сховища
+     */
     private boolean needsLeadingLineSeparator() throws IOException {
         byte[] fileBytes = Files.readAllBytes(storagePath);
         if (fileBytes.length == 0) {

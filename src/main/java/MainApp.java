@@ -16,6 +16,11 @@ import javafx.stage.Stage;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * JavaFX-застосунок для роботи з колекцією одягу.
+ * Дозволяє додавати нові об'єкти, переглядати колекцію у скороченому вигляді
+ * та шукати елементи за UUID.
+ */
 public class MainApp extends Application {
     private static final String STORAGE_PATH_PROPERTY = "clothes.storage.path";
     private static final String DEFAULT_STORAGE_PATH = "input.txt";
@@ -37,6 +42,11 @@ public class MainApp extends Application {
     private TextArea detailsArea;
     private Label statusLabel;
 
+    /**
+     * Створює та відображає головне вікно застосунку.
+     *
+     * @param stage головна сцена JavaFX
+     */
     @Override
     public void start(Stage stage) {
         storeService.loadFromStorage();
@@ -48,6 +58,11 @@ public class MainApp extends Application {
         refreshCollectionView();
     }
 
+    /**
+     * Формує кореневий контейнер головного вікна.
+     *
+     * @return контейнер з усіма секціями інтерфейсу
+     */
     private BorderPane createRoot() {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(16));
@@ -59,6 +74,11 @@ public class MainApp extends Application {
         return root;
     }
 
+    /**
+     * Створює секцію додавання нового одягу.
+     *
+     * @return контейнер з формою створення об'єкта
+     */
     private VBox createAddSection() {
         Label title = new Label("Add clothes");
 
@@ -99,6 +119,11 @@ public class MainApp extends Application {
         return section;
     }
 
+    /**
+     * Створює секцію пошуку об'єкта за UUID.
+     *
+     * @return контейнер з полем пошуку та блоком результату
+     */
     private VBox createSearchSection() {
         Label title = new Label("Search by UUID");
 
@@ -122,6 +147,11 @@ public class MainApp extends Application {
         return section;
     }
 
+    /**
+     * Створює секцію для відображення всієї колекції у короткому форматі.
+     *
+     * @return контейнер зі списком об'єктів
+     */
     private VBox createCollectionSection() {
         Label title = new Label("Collection");
 
@@ -136,6 +166,10 @@ public class MainApp extends Application {
         return section;
     }
 
+    /**
+     * Обробляє натискання кнопки додавання одягу.
+     * Створює об'єкт з даних форми, зберігає його та оновлює список.
+     */
     private void handleAddClothes() {
         try {
             Clothes clothes = createClothesFromForm();
@@ -148,6 +182,10 @@ public class MainApp extends Application {
         }
     }
 
+    /**
+     * Обробляє пошук об'єкта за введеним UUID.
+     * Показує повну інформацію про знайдений елемент або повідомлення про помилку.
+     */
     private void handleFindByUuid() {
         try {
             UUID uuid = UUID.fromString(uuidField.getText().trim());
@@ -164,6 +202,12 @@ public class MainApp extends Application {
         }
     }
 
+    /**
+     * Створює екземпляр {@link Clothes} відповідного типу на основі значень форми.
+     *
+     * @return новий об'єкт одягу
+     * @throws IllegalArgumentException якщо значення полів некоректні
+     */
     private Clothes createClothesFromForm() {
         String name = nameField.getText();
         Size size = sizeComboBox.getValue();
@@ -180,6 +224,9 @@ public class MainApp extends Application {
         };
     }
 
+    /**
+     * Оновлює блок короткого відображення всієї колекції.
+     */
     private void refreshCollectionView() {
         List<Clothes> clothesList = storeService.getAllClothes();
         if (clothesList.isEmpty()) {
@@ -198,10 +245,19 @@ public class MainApp extends Application {
         collectionArea.setText(builder.toString());
     }
 
+    /**
+     * Формує короткий рядок для відображення об'єкта у списку колекції.
+     *
+     * @param clothes об'єкт одягу
+     * @return рядок у форматі "тип: назва | UUID: ..."
+     */
     private String formatShortClothes(Clothes clothes) {
         return clothes.getType() + ": " + clothes.getName() + " | UUID: " + clothes.getUuid();
     }
 
+    /**
+     * Очищає форму після успішного додавання нового елемента.
+     */
     private void clearAddForm() {
         nameField.clear();
         sizeComboBox.setValue(Size.M);
@@ -210,6 +266,9 @@ public class MainApp extends Application {
         extraField.clear();
     }
 
+    /**
+     * Оновлює підпис специфічного поля залежно від обраного типу одягу.
+     */
     private void updateExtraFieldLabel() {
         String extraLabelText = switch (typeComboBox.getValue()) {
             case "Pants" -> "Waist size:";
@@ -221,16 +280,37 @@ public class MainApp extends Application {
         extraFieldLabel.setText(extraLabelText);
     }
 
+    /**
+     * Додає рядок форми, створюючи підпис з тексту.
+     *
+     * @param grid контейнер-сітка
+     * @param rowIndex індекс рядка
+     * @param labelText текст підпису
+     * @param input елемент вводу
+     */
     private void addFormRow(GridPane grid, int rowIndex, String labelText, javafx.scene.Node input) {
         addFormRow(grid, rowIndex, new Label(labelText), input);
     }
 
+    /**
+     * Додає готовий рядок форми до сітки.
+     *
+     * @param grid контейнер-сітка
+     * @param rowIndex індекс рядка
+     * @param label підпис поля
+     * @param input елемент вводу
+     */
     private void addFormRow(GridPane grid, int rowIndex, Label label, javafx.scene.Node input) {
         grid.add(label, 0, rowIndex);
         grid.add(input, 1, rowIndex);
         GridPane.setHgrow(input, Priority.ALWAYS);
     }
 
+    /**
+     * Визначає шлях до файлу сховища з системної властивості або використовує типовий.
+     *
+     * @return шлях до файлу сховища
+     */
     private static String resolveStoragePath() {
         return System.getProperty(STORAGE_PATH_PROPERTY, DEFAULT_STORAGE_PATH);
     }
