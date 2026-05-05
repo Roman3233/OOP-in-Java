@@ -3,8 +3,10 @@
  * Містить спільні властивості, які успадковують похідні класи.
  */
 import java.util.Objects;
+import java.util.UUID;
 
-public abstract class Clothes implements Comparable<Clothes> {
+public abstract class Clothes implements Comparable<Clothes>, Identifiable {
+    private final UUID uuid;
     private String name;
     private Size size;
     private double price;
@@ -21,10 +23,16 @@ public abstract class Clothes implements Comparable<Clothes> {
      *                                  якщо {@code size} є {@code null} або якщо {@code price <= 0}
      */
     public Clothes(String name, Size size, double price, String material) {
+        this.uuid = UUID.randomUUID();
         setName(name);
         setSize(size);
         setPrice(price);
         setMaterial(material);
+    }
+
+    @Override
+    public UUID getUuid() {
+        return uuid;
     }
 
     /**
