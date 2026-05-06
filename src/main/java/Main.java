@@ -354,7 +354,7 @@ public class Main {
     }
 
     private static Clothes copyClothesWithUpdatedSpecificField(Scanner scanner, Clothes clothes) {
-        if (clothes instanceof Pants pants) {
+        if (clothes instanceof Pants) {
             return new Pants(
                     clothes.getName(),
                     clothes.getSize(),
@@ -363,7 +363,7 @@ public class Main {
                     readPositiveDouble(scanner, "New waist size: ")
             );
         }
-        if (clothes instanceof Shirts shirts) {
+        if (clothes instanceof Shirts) {
             return new Shirts(
                     clothes.getName(),
                     clothes.getSize(),
@@ -372,7 +372,7 @@ public class Main {
                     readPositiveDouble(scanner, "New sleeve length: ")
             );
         }
-        if (clothes instanceof Jacket jacket) {
+        if (clothes instanceof Jacket) {
             return new Jacket(
                     clothes.getName(),
                     clothes.getSize(),
@@ -381,7 +381,7 @@ public class Main {
                     readPocketCount(scanner, "New pocket count: ")
             );
         }
-        if (clothes instanceof Hat hat) {
+        if (clothes instanceof Hat) {
             return new Hat(
                     clothes.getName(),
                     clothes.getSize(),
