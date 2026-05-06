@@ -80,6 +80,30 @@ class StoreServiceTest {
     }
 
     @Test
+    void shouldUpdateClothesInStoreWithoutChangingFile() throws IOException {
+        Path storageFile = Files.createTempFile("store-service-update", ".txt");
+        Files.writeString(
+                storageFile,
+                "Pants;501;M;2499.99;Denim;82.0" + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        Store store = new Store("My store");
+        StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
+        storeService.loadFromStorage();
+
+        Pants existingPants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        Pants updatedPants = new Pants("502", Size.M, 2499.99, "Denim", 82);
+
+        boolean updated = storeService.updateClothes(existingPants, updatedPants);
+
+        assertTrue(updated);
+        assertEquals(List.of(updatedPants), storeService.getAllClothes());
+        assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8)
+                .contains("Pants;501;M;2499.99;Denim;82.0"));
+    }
+
+    @Test
     void shouldRejectNullDependencies() throws IOException {
         Path storageFile = Files.createTempFile("store-service-invalid", ".txt");
         ClothesFileStorage storage = new ClothesFileStorage(storageFile.toString());

@@ -28,8 +28,8 @@ class MainTest {
     void shouldPrintEmptyListMessageAndExit() throws IOException {
         Path storageFile = Files.createTempFile("clothes-main-empty", ".txt");
         String input = String.join(System.lineSeparator(),
-                "3", // show all clothes (empty)
-                "5"  // exit
+                "4", // show all clothes (empty)
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -48,9 +48,9 @@ class MainTest {
         );
 
         String input = String.join(System.lineSeparator(),
-                "4", // sort submenu
+                "5", // sort submenu
                 "0", // return to main menu
-                "5"  // exit
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -64,9 +64,9 @@ class MainTest {
     void shouldPrintEmptyListMessageWhenSortingEmptyList() throws IOException {
         Path storageFile = Files.createTempFile("clothes-main-sort-empty", ".txt");
         String input = String.join(System.lineSeparator(),
-                "4", // sort submenu
+                "5", // sort submenu
                 "1", // sort by name
-                "5"  // exit
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -91,8 +91,8 @@ class MainTest {
                 "2499.99", // price
                 "Denim", // material
                 "82", // waist size
-                "3", // show all clothes
-                "5"  // exit
+                "4", // show all clothes
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -114,8 +114,8 @@ class MainTest {
         );
 
         String input = String.join(System.lineSeparator(),
-                "3",
-                "5"
+                "4",
+                "6"
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -142,8 +142,8 @@ class MainTest {
                 "3", // search by material
                 "denim",
                 "0", // return to main menu
-                "3", // show all clothes
-                "5"  // exit
+                "4", // show all clothes
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -168,7 +168,7 @@ class MainTest {
                 "2", // search by size
                 "XS",
                 "0", // return to main menu
-                "5"  // exit
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -187,9 +187,9 @@ class MainTest {
         );
 
         String input = String.join(System.lineSeparator(),
-                "4",
+                "5",
                 "1",
-                "5"
+                "6"
         ) + System.lineSeparator();
 
         String output = runMainAndCaptureOutput(input, storageFile);
@@ -214,9 +214,9 @@ class MainTest {
         );
 
         String output = runMainAndCaptureOutput(
-                "4" + System.lineSeparator() +
+                "5" + System.lineSeparator() +
                         "1" + System.lineSeparator() +
-                        "5" + System.lineSeparator(),
+                        "6" + System.lineSeparator(),
                 storageFile
         );
 
@@ -244,9 +244,9 @@ class MainTest {
         );
 
         String output = runMainAndCaptureOutput(
-                "4" + System.lineSeparator() +
+                "5" + System.lineSeparator() +
                         "2" + System.lineSeparator() +
-                        "5" + System.lineSeparator(),
+                        "6" + System.lineSeparator(),
                 storageFile
         );
 
@@ -274,9 +274,9 @@ class MainTest {
         );
 
         String output = runMainAndCaptureOutput(
-                "4" + System.lineSeparator() +
+                "5" + System.lineSeparator() +
                         "3" + System.lineSeparator() +
-                        "5" + System.lineSeparator(),
+                        "6" + System.lineSeparator(),
                 storageFile
         );
 
@@ -304,9 +304,9 @@ class MainTest {
         );
 
         String output = runMainAndCaptureOutput(
-                "4" + System.lineSeparator() +
+                "5" + System.lineSeparator() +
                         "2" + System.lineSeparator() +
-                        "5" + System.lineSeparator(),
+                        "6" + System.lineSeparator(),
                 storageFile
         );
 
@@ -338,10 +338,10 @@ class MainTest {
                 "Denim",
                 "-1", // invalid waist size
                 "82",
-                "4", // print sorted list
+                "5", // print sorted list
                 "9", // invalid sorting criterion
                 "1",
-                "5"  // exit
+                "6"  // exit
         ) + System.lineSeparator();
 
         String output = assertDoesNotThrow(() -> runMainAndCaptureOutput(input, storageFile));
@@ -357,6 +357,34 @@ class MainTest {
         assertTrue(output.contains("All clothes sorted by name:"));
         assertTrue(output.contains("Pants: name='501'"));
         assertTrue(output.contains("Program finished."));
+    }
+
+    @Test
+    void shouldModifySelectedClothesOnlyInMemory() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-modify", ".txt");
+        Files.writeString(
+                storageFile,
+                "Pants;501;M;2499.99;Denim;82.0" + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String input = String.join(System.lineSeparator(),
+                "3", // modify object
+                "1", // select first object
+                "1", // modify name
+                "502",
+                "4", // show all clothes
+                "6"  // exit
+        ) + System.lineSeparator();
+
+        String output = runMainAndCaptureOutput(input, storageFile);
+
+        assertTrue(output.contains("Choose clothes to modify:"));
+        assertTrue(output.contains("Choose attribute to modify:"));
+        assertTrue(output.contains("Clothes updated successfully."));
+        assertTrue(output.contains("Pants: name='502'"));
+        assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8)
+                .contains("Pants;501;M;2499.99;Denim;82.0"));
     }
 
     private static String runMainAndCaptureOutput(String stdin, Path storageFile) {

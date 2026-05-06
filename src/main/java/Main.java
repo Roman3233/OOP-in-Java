@@ -36,12 +36,15 @@ public class Main {
                     createClothesFromSubmenu(scanner, storeService);
                     break;
                 case 3:
-                    printAllClothes(storeService);
+                    modifyClothes(scanner, storeService);
                     break;
                 case 4:
-                    printSortedClothesFromSubmenu(scanner, storeService);
+                    printAllClothes(storeService);
                     break;
                 case 5:
+                    printSortedClothesFromSubmenu(scanner, storeService);
+                    break;
+                case 6:
                     running = false;
                     System.out.println("Program finished.");
                     break;
@@ -57,14 +60,15 @@ public class Main {
         System.out.println("\nMain menu:");
         System.out.println("1. Search object");
         System.out.println("2. Create new object");
-        System.out.println("3. Show all clothes");
-        System.out.println("4. Sort by");
-        System.out.println("5. Exit");
+        System.out.println("3. Modify object");
+        System.out.println("4. Show all clothes");
+        System.out.println("5. Sort by");
+        System.out.println("6. Exit");
     }
 
     private static int readMainMenuChoice(Scanner scanner) {
         if (!scanner.hasNextLine()) {
-            return 5;
+            return 6;
         }
         return readNonNegativeInt(scanner, "Choose an option: ");
     }
@@ -178,6 +182,179 @@ public class Main {
         for (Clothes clothes : clothesList) {
             System.out.println(clothes);
         }
+    }
+
+    private static void modifyClothes(Scanner scanner, StoreService storeService) {
+        List<Clothes> clothesList = storeService.getAllClothes();
+        if (clothesList.isEmpty()) {
+            System.out.println("\nThe clothes list is empty.");
+            return;
+        }
+
+        Clothes selectedClothes = chooseClothesToModify(scanner, clothesList);
+        Clothes updatedClothes = readUpdatedClothes(scanner, selectedClothes);
+        boolean updated = storeService.updateClothes(selectedClothes, updatedClothes);
+
+        if (updated) {
+            System.out.println("Clothes updated successfully.");
+        } else {
+            System.out.println("Error: clothes object was not found.");
+        }
+    }
+
+    private static Clothes chooseClothesToModify(Scanner scanner, List<Clothes> clothesList) {
+        System.out.println("\nChoose clothes to modify:");
+        for (int index = 0; index < clothesList.size(); index++) {
+            System.out.println((index + 1) + ". " + clothesList.get(index));
+        }
+
+        while (true) {
+            int selectedIndex = readNonNegativeInt(scanner, "Enter object number: ");
+            if (selectedIndex < 1 || selectedIndex > clothesList.size()) {
+                System.out.println("Error: object number is out of range.");
+                continue;
+            }
+
+            return clothesList.get(selectedIndex - 1);
+        }
+    }
+
+    private static Clothes readUpdatedClothes(Scanner scanner, Clothes clothes) {
+        printModifySubmenu(clothes);
+
+        while (true) {
+            int attributeChoice = readNonNegativeInt(scanner, "Choose attribute to modify: ");
+            Clothes updatedClothes = tryBuildUpdatedClothes(scanner, clothes, attributeChoice);
+
+            if (updatedClothes != null) {
+                return updatedClothes;
+            }
+
+            System.out.println("Error: unknown menu option.");
+        }
+    }
+
+    private static void printModifySubmenu(Clothes clothes) {
+        System.out.println("\nChoose attribute to modify:");
+        System.out.println("1. Name");
+        System.out.println("2. Size");
+        System.out.println("3. Price");
+        System.out.println("4. Material");
+
+        if (clothes instanceof Pants) {
+            System.out.println("5. Waist size");
+        } else if (clothes instanceof Shirts) {
+            System.out.println("5. Sleeve length");
+        } else if (clothes instanceof Jacket) {
+            System.out.println("5. Pocket count");
+        } else if (clothes instanceof Hat) {
+            System.out.println("5. Brim width");
+        }
+    }
+
+    private static Clothes tryBuildUpdatedClothes(Scanner scanner, Clothes clothes, int attributeChoice) {
+        switch (attributeChoice) {
+            case 1:
+                return copyClothesWithUpdatedBaseFields(
+                        clothes,
+                        readNonEmptyString(scanner, "New name: "),
+                        clothes.getSize(),
+                        clothes.getPrice(),
+                        clothes.getMaterial()
+                );
+            case 2:
+                return copyClothesWithUpdatedBaseFields(
+                        clothes,
+                        clothes.getName(),
+                        readSize(scanner, "New size (XS/S/M/L/XL/XXL): "),
+                        clothes.getPrice(),
+                        clothes.getMaterial()
+                );
+            case 3:
+                return copyClothesWithUpdatedBaseFields(
+                        clothes,
+                        clothes.getName(),
+                        clothes.getSize(),
+                        readPositiveDouble(scanner, "New price: "),
+                        clothes.getMaterial()
+                );
+            case 4:
+                return copyClothesWithUpdatedBaseFields(
+                        clothes,
+                        clothes.getName(),
+                        clothes.getSize(),
+                        clothes.getPrice(),
+                        readNonEmptyString(scanner, "New material: ")
+                );
+            case 5:
+                return copyClothesWithUpdatedSpecificField(scanner, clothes);
+            default:
+                return null;
+        }
+    }
+
+    private static Clothes copyClothesWithUpdatedBaseFields(
+            Clothes clothes,
+            String name,
+            Size size,
+            double price,
+            String material
+    ) {
+        if (clothes instanceof Pants pants) {
+            return new Pants(name, size, price, material, pants.getWaistSize());
+        }
+        if (clothes instanceof Shirts shirts) {
+            return new Shirts(name, size, price, material, shirts.getSleeveLength());
+        }
+        if (clothes instanceof Jacket jacket) {
+            return new Jacket(name, size, price, material, jacket.getPocketCount());
+        }
+        if (clothes instanceof Hat hat) {
+            return new Hat(name, size, price, material, hat.getBrimWidth());
+        }
+
+        throw new IllegalArgumentException("Unsupported clothes type: " + clothes.getClass().getSimpleName());
+    }
+
+    private static Clothes copyClothesWithUpdatedSpecificField(Scanner scanner, Clothes clothes) {
+        if (clothes instanceof Pants pants) {
+            return new Pants(
+                    clothes.getName(),
+                    clothes.getSize(),
+                    clothes.getPrice(),
+                    clothes.getMaterial(),
+                    readPositiveDouble(scanner, "New waist size: ")
+            );
+        }
+        if (clothes instanceof Shirts shirts) {
+            return new Shirts(
+                    clothes.getName(),
+                    clothes.getSize(),
+                    clothes.getPrice(),
+                    clothes.getMaterial(),
+                    readPositiveDouble(scanner, "New sleeve length: ")
+            );
+        }
+        if (clothes instanceof Jacket jacket) {
+            return new Jacket(
+                    clothes.getName(),
+                    clothes.getSize(),
+                    clothes.getPrice(),
+                    clothes.getMaterial(),
+                    readPocketCount(scanner, "New pocket count: ")
+            );
+        }
+        if (clothes instanceof Hat hat) {
+            return new Hat(
+                    clothes.getName(),
+                    clothes.getSize(),
+                    clothes.getPrice(),
+                    clothes.getMaterial(),
+                    readPositiveDouble(scanner, "New brim width: ")
+            );
+        }
+
+        throw new IllegalArgumentException("Unsupported clothes type: " + clothes.getClass().getSimpleName());
     }
 
     private static void printSortedClothesFromSubmenu(Scanner scanner, StoreService storeService) {

@@ -51,6 +51,17 @@ public class StoreService {
     }
 
     /**
+     * Оновлює об'єкт одягу в магазині лише в пам'яті.
+     *
+     * @param existingClothes поточний об'єкт
+     * @param newClothes новий стан об'єкта
+     * @return {@code true}, якщо оновлення виконано; інакше {@code false}
+     */
+    public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
+        return store.update(existingClothes, newClothes);
+    }
+
+    /**
      * Повертає всі унікальні позиції одягу у магазині.
      *
      * @return список одягу

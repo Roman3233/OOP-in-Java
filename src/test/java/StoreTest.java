@@ -3,7 +3,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StoreTest {
 
@@ -57,6 +59,34 @@ class StoreTest {
     }
 
     @Test
+    void shouldUpdateExistingClothesAndKeepQuantity() {
+        Store store = new Store("My store");
+        Pants originalPants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        Pants updatedPants = new Pants("502", Size.M, 2499.99, "Denim", 82);
+
+        store.addNewClothes(originalPants, 3);
+
+        boolean updated = store.update(originalPants, updatedPants);
+
+        assertTrue(updated);
+        assertEquals(0, store.getQuantity(originalPants));
+        assertEquals(3, store.getQuantity(updatedPants));
+        assertEquals(List.of(updatedPants), store.getClothes());
+    }
+
+    @Test
+    void shouldReturnFalseWhenUpdatingMissingClothes() {
+        Store store = new Store("My store");
+        Pants originalPants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        Pants updatedPants = new Pants("502", Size.M, 2499.99, "Denim", 82);
+
+        boolean updated = store.update(originalPants, updatedPants);
+
+        assertFalse(updated);
+        assertTrue(store.getClothes().isEmpty());
+    }
+
+    @Test
     void shouldRejectInvalidArguments() {
         Store store = new Store("My store");
         Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
@@ -64,6 +94,8 @@ class StoreTest {
         assertThrows(IllegalArgumentException.class, () -> new Store(" "));
         assertThrows(IllegalArgumentException.class, () -> store.addNewClothes(null, 1));
         assertThrows(IllegalArgumentException.class, () -> store.addNewClothes(pants, 0));
+        assertThrows(IllegalArgumentException.class, () -> store.update(null, pants));
+        assertThrows(IllegalArgumentException.class, () -> store.update(pants, null));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesByName(" "));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesBySize(null));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesByMaterial(null));
