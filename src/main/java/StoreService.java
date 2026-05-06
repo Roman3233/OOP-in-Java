@@ -20,10 +20,10 @@ public class StoreService {
      */
     public StoreService(Store store, ClothesFileStorage storage) {
         if (store == null) {
-            throw new IllegalArgumentException("Store cannot be null.");
+            throw new InvalidFieldValueException("Store cannot be null.");
         }
         if (storage == null) {
-            throw new IllegalArgumentException("Storage cannot be null.");
+            throw new InvalidFieldValueException("Storage cannot be null.");
         }
 
         this.store = store;
@@ -65,23 +65,22 @@ public class StoreService {
      * @return {@code true}, якщо оновлення виконано; інакше {@code false}
      */
     public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
-        boolean updatedInStore = store.update(existingClothes, newClothes);
-        if (!updatedInStore) {
-            return false;
-        }
+        store.update(existingClothes, newClothes);
 
+        boolean updatedInStorage;
         try {
-            boolean updatedInStorage = storage.updateClothes(existingClothes, newClothes);
-            if (!updatedInStorage) {
-                store.update(newClothes, existingClothes);
-                return false;
-            }
-
-            return true;
+            updatedInStorage = storage.updateClothes(existingClothes, newClothes);
         } catch (RuntimeException e) {
             store.update(newClothes, existingClothes);
             throw e;
         }
+
+        if (!updatedInStorage) {
+            store.update(newClothes, existingClothes);
+            throw new ObjectNotFoundException("Clothes object to update was not found in file storage.");
+        }
+
+        return true;
     }
 
     /**
@@ -92,23 +91,22 @@ public class StoreService {
      */
     public boolean deleteClothes(Clothes existingClothes) {
         int quantityBeforeDeletion = store.getQuantity(existingClothes);
-        boolean deletedFromStore = store.delete(existingClothes);
-        if (!deletedFromStore) {
-            return false;
-        }
+        store.delete(existingClothes);
 
+        boolean deletedFromStorage;
         try {
-            boolean deletedFromStorage = storage.deleteClothes(existingClothes);
-            if (!deletedFromStorage) {
-                store.addNewClothes(existingClothes, quantityBeforeDeletion);
-                return false;
-            }
-
-            return true;
+            deletedFromStorage = storage.deleteClothes(existingClothes);
         } catch (RuntimeException e) {
             store.addNewClothes(existingClothes, quantityBeforeDeletion);
             throw e;
         }
+
+        if (!deletedFromStorage) {
+            store.addNewClothes(existingClothes, quantityBeforeDeletion);
+            throw new ObjectNotFoundException("Clothes object to delete was not found in file storage.");
+        }
+
+        return true;
     }
 
     /**

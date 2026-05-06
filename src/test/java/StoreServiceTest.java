@@ -9,7 +9,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StoreServiceTest {
@@ -132,23 +131,22 @@ class StoreServiceTest {
     }
 
     @Test
-    void shouldReturnFalseWhenDeletingMissingClothesFromStoreMemory() throws IOException {
+    void shouldThrowObjectNotFoundExceptionWhenDeletingMissingClothesFromStoreMemory() throws IOException {
         Path storageFile = Files.createTempFile("store-service-delete-missing", ".txt");
         Store store = new Store("My store");
         StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
 
-        boolean deleted = storeService.deleteClothes(new Pants("501", Size.M, 2499.99, "Denim", 82));
-
-        assertFalse(deleted);
+        assertThrows(ObjectNotFoundException.class,
+                () -> storeService.deleteClothes(new Pants("501", Size.M, 2499.99, "Denim", 82)));
     }
 
     @Test
-    void shouldRejectNullDependencies() throws IOException {
+    void shouldThrowInvalidFieldValueExceptionWhenDependenciesAreNull() throws IOException {
         Path storageFile = Files.createTempFile("store-service-invalid", ".txt");
         ClothesFileStorage storage = new ClothesFileStorage(storageFile.toString());
         Store store = new Store("My store");
 
-        assertThrows(IllegalArgumentException.class, () -> new StoreService(null, storage));
-        assertThrows(IllegalArgumentException.class, () -> new StoreService(store, null));
+        assertThrows(InvalidFieldValueException.class, () -> new StoreService(null, storage));
+        assertThrows(InvalidFieldValueException.class, () -> new StoreService(store, null));
     }
 }

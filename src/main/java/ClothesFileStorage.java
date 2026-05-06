@@ -24,13 +24,13 @@ public class ClothesFileStorage {
      */
     public ClothesFileStorage(String filePath) {
         if (filePath == null || filePath.trim().isEmpty()) {
-            throw new IllegalArgumentException("Storage path cannot be null or empty.");
+            throw new InvalidFieldValueException("Storage path cannot be null or empty.");
         }
 
         try {
             this.storagePath = Paths.get(filePath.trim());
         } catch (InvalidPathException e) {
-            throw new IllegalArgumentException("Invalid storage path: " + filePath, e);
+            throw new InvalidFieldValueException("Invalid storage path: " + filePath, e);
         }
     }
 
@@ -71,7 +71,7 @@ public class ClothesFileStorage {
      */
     public void appendClothes(Clothes clothes) {
         if (clothes == null) {
-            throw new IllegalArgumentException("Clothes cannot be null.");
+            throw new InvalidFieldValueException("Clothes cannot be null.");
         }
 
         try {
@@ -102,10 +102,10 @@ public class ClothesFileStorage {
      */
     public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
         if (existingClothes == null) {
-            throw new IllegalArgumentException("Existing clothes cannot be null.");
+            throw new InvalidFieldValueException("Existing clothes cannot be null.");
         }
         if (newClothes == null) {
-            throw new IllegalArgumentException("New clothes cannot be null.");
+            throw new InvalidFieldValueException("New clothes cannot be null.");
         }
 
         List<Clothes> clothesList = loadClothes();
@@ -136,7 +136,7 @@ public class ClothesFileStorage {
      */
     public boolean deleteClothes(Clothes existingClothes) {
         if (existingClothes == null) {
-            throw new IllegalArgumentException("Existing clothes cannot be null.");
+            throw new InvalidFieldValueException("Existing clothes cannot be null.");
         }
 
         List<Clothes> clothesList = loadClothes();

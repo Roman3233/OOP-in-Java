@@ -40,7 +40,7 @@ public class Pants extends Clothes {
      */
     public void setWaistSize(double waistSize) {
         if (waistSize <= 0) {
-            throw new IllegalArgumentException("Waist size must be greater than 0.");
+            throw new InvalidFieldValueException("Waist size must be greater than 0.");
         }
         this.waistSize = waistSize;
     }

@@ -84,10 +84,10 @@ public class Store {
      */
     public void addNewClothes(Clothes item, int quantity) {
         if (item == null) {
-            throw new IllegalArgumentException("Clothes item cannot be null.");
+            throw new InvalidFieldValueException("Clothes item cannot be null.");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0.");
+            throw new InvalidFieldValueException("Quantity must be greater than 0.");
         }
 
         quantities.put(item, quantities.getOrDefault(item, 0) + quantity);
@@ -103,10 +103,10 @@ public class Store {
      */
     public boolean update(Clothes existingObject, Clothes newObject) {
         if (existingObject == null) {
-            throw new IllegalArgumentException("Existing clothes object cannot be null.");
+            throw new InvalidFieldValueException("Existing clothes object cannot be null.");
         }
         if (newObject == null) {
-            throw new IllegalArgumentException("New clothes object cannot be null.");
+            throw new InvalidFieldValueException("New clothes object cannot be null.");
         }
 
         LinkedHashMap<Clothes, Integer> updatedQuantities = new LinkedHashMap<>();
@@ -126,7 +126,7 @@ public class Store {
         }
 
         if (!updated) {
-            return false;
+            throw new ObjectNotFoundException("Clothes object to update was not found.");
         }
 
         quantities.clear();
@@ -143,11 +143,11 @@ public class Store {
      */
     public boolean delete(Clothes existingObject) {
         if (existingObject == null) {
-            throw new IllegalArgumentException("Existing clothes object cannot be null.");
+            throw new InvalidFieldValueException("Existing clothes object cannot be null.");
         }
 
         if (!quantities.containsKey(existingObject)) {
-            return false;
+            throw new ObjectNotFoundException("Clothes object to delete was not found.");
         }
 
         quantities.remove(existingObject);
@@ -175,7 +175,7 @@ public class Store {
      */
     public List<Clothes> findClothesBySize(Size size) {
         if (size == null) {
-            throw new IllegalArgumentException("Size cannot be null.");
+            throw new InvalidFieldValueException("Size cannot be null.");
         }
 
         return findClothes(item -> item.getSize() == size);
@@ -202,7 +202,7 @@ public class Store {
      */
     public List<Clothes> findClothesByMaximumPrice(double maximumPrice) {
         if (maximumPrice <= 0) {
-            throw new IllegalArgumentException("Maximum price must be greater than 0.");
+            throw new InvalidFieldValueException("Maximum price must be greater than 0.");
         }
 
         return findClothes(item -> item.getPrice() <= maximumPrice);
@@ -222,12 +222,12 @@ public class Store {
 
     private String normalizeText(String value, String fieldName) {
         if (value == null) {
-            throw new IllegalArgumentException(fieldName + " cannot be null.");
+            throw new InvalidFieldValueException(fieldName + " cannot be null.");
         }
 
         String normalizedValue = value.trim().toLowerCase();
         if (normalizedValue.isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be empty.");
+            throw new InvalidFieldValueException(fieldName + " cannot be empty.");
         }
 
         return normalizedValue;
@@ -235,7 +235,7 @@ public class Store {
 
     private String validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Store name cannot be null or empty.");
+            throw new InvalidFieldValueException("Store name cannot be null or empty.");
         }
         return name.trim();
     }

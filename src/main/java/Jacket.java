@@ -40,10 +40,10 @@ public class Jacket extends Clothes {
      */
     public void setPocketCount(int pocketCount) {
         if (pocketCount < 0) {
-            throw new IllegalArgumentException("Pocket count cannot be negative.");
+            throw new InvalidFieldValueException("Pocket count cannot be negative.");
         }
         if (pocketCount > 10) {
-            throw new IllegalArgumentException("Pocket count cannot be greater than 10.");
+            throw new InvalidFieldValueException("Pocket count cannot be greater than 10.");
         }
         this.pocketCount = pocketCount;
     }
