@@ -189,30 +189,27 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    printSortedClothes(storeService, new Comparator<Clothes>() {
-                        @Override
-                        public int compare(Clothes first, Clothes second) {
-                            return first.getName().compareTo(second.getName());
-                        }
-                    }, "name");
+                    printSortedClothes(
+                            storeService,
+                            (first, second) -> first.getName().compareTo(second.getName()),
+                            "name"
+                    );
                     inSubmenu = false;
                     break;
                 case 2:
-                    printSortedClothes(storeService, new Comparator<Clothes>() {
-                        @Override
-                        public int compare(Clothes first, Clothes second) {
-                            return Double.compare(first.getPrice(), second.getPrice());
-                        }
-                    }, "price");
+                    printSortedClothes(
+                            storeService,
+                            (first, second) -> Double.compare(first.getPrice(), second.getPrice()),
+                            "price"
+                    );
                     inSubmenu = false;
                     break;
                 case 3:
-                    printSortedClothes(storeService, new Comparator<Clothes>() {
-                        @Override
-                        public int compare(Clothes first, Clothes second) {
-                            return first.getSize().compareTo(second.getSize());
-                        }
-                    }, "size");
+                    printSortedClothes(
+                            storeService,
+                            (first, second) -> first.getSize().compareTo(second.getSize()),
+                            "size"
+                    );
                     inSubmenu = false;
                     break;
                 case 0:

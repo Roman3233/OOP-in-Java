@@ -38,6 +38,44 @@ class MainTest {
         assertTrue(output.contains("Program finished."));
     }
 
+    @Test
+    void shouldReturnToMainMenuFromSortSubmenuWithoutSorting() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sort-return", ".txt");
+        Files.writeString(
+                storageFile,
+                "Hat;Safari;M;899.99;Cotton;9.0" + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String input = String.join(System.lineSeparator(),
+                "4", // sort submenu
+                "0", // return to main menu
+                "5"  // exit
+        ) + System.lineSeparator();
+
+        String output = runMainAndCaptureOutput(input, storageFile);
+
+        assertTrue(output.contains("Choose sorting criterion:"));
+        assertTrue(output.contains("Returning to main menu."));
+        assertTrue(output.contains("Program finished."));
+    }
+
+    @Test
+    void shouldPrintEmptyListMessageWhenSortingEmptyList() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sort-empty", ".txt");
+        String input = String.join(System.lineSeparator(),
+                "4", // sort submenu
+                "1", // sort by name
+                "5"  // exit
+        ) + System.lineSeparator();
+
+        String output = runMainAndCaptureOutput(input, storageFile);
+
+        assertTrue(output.contains("Choose sorting criterion:"));
+        assertTrue(output.contains("The clothes list is empty."));
+        assertTrue(output.contains("Program finished."));
+    }
+
     /**
      * Перевіряє, що програма дозволяє створити об'єкт одягу та відображає його
      * у списку при виборі пункту "Show all clothes".
@@ -190,6 +228,96 @@ class MainTest {
         assertTrue(alphaIndex >= 0);
         assertTrue(bravoIndex > alphaIndex);
         assertTrue(zuluIndex > bravoIndex);
+    }
+
+    @Test
+    void shouldSortByPriceFromSortSubmenu() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sorted-price", ".txt");
+        Files.writeString(
+                storageFile,
+                String.join(System.lineSeparator(),
+                        "Jacket;Storm;L;3999.99;Leather;4",
+                        "Hat;Safari;M;899.99;Cotton;9.0",
+                        "Pants;501;S;2499.99;Denim;82.0"
+                ) + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String output = runMainAndCaptureOutput(
+                "4" + System.lineSeparator() +
+                        "2" + System.lineSeparator() +
+                        "5" + System.lineSeparator(),
+                storageFile
+        );
+
+        int hatIndex = output.indexOf("Hat: name='Safari'");
+        int pantsIndex = output.indexOf("Pants: name='501'");
+        int jacketIndex = output.indexOf("Jacket: name='Storm'");
+
+        assertTrue(output.contains("All clothes sorted by price:"));
+        assertTrue(hatIndex >= 0);
+        assertTrue(pantsIndex > hatIndex);
+        assertTrue(jacketIndex > pantsIndex);
+    }
+
+    @Test
+    void shouldSortBySizeFromSortSubmenu() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sorted-size", ".txt");
+        Files.writeString(
+                storageFile,
+                String.join(System.lineSeparator(),
+                        "Hat;Safari;XL;899.99;Cotton;9.0",
+                        "Pants;501;S;2499.99;Denim;82.0",
+                        "Jacket;Storm;M;3999.99;Leather;4"
+                ) + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String output = runMainAndCaptureOutput(
+                "4" + System.lineSeparator() +
+                        "3" + System.lineSeparator() +
+                        "5" + System.lineSeparator(),
+                storageFile
+        );
+
+        int sizeSIndex = output.indexOf("Pants: name='501'");
+        int sizeMIndex = output.indexOf("Jacket: name='Storm'");
+        int sizeXLIndex = output.indexOf("Hat: name='Safari'");
+
+        assertTrue(output.contains("All clothes sorted by size:"));
+        assertTrue(sizeSIndex >= 0);
+        assertTrue(sizeMIndex > sizeSIndex);
+        assertTrue(sizeXLIndex > sizeMIndex);
+    }
+
+    @Test
+    void shouldKeepStableOrderWhenSortingByPriceWithEqualPrices() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-main-sorted-price-ties", ".txt");
+        Files.writeString(
+                storageFile,
+                String.join(System.lineSeparator(),
+                        "Hat;First;M;1000.0;Cotton;9.0",
+                        "Pants;Second;M;1000.0;Denim;82.0",
+                        "Jacket;Third;M;2000.0;Leather;4"
+                ) + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        String output = runMainAndCaptureOutput(
+                "4" + System.lineSeparator() +
+                        "2" + System.lineSeparator() +
+                        "5" + System.lineSeparator(),
+                storageFile
+        );
+
+        int firstIndex = output.indexOf("Hat: name='First'");
+        int secondIndex = output.indexOf("Pants: name='Second'");
+        int thirdIndex = output.indexOf("Jacket: name='Third'");
+
+        assertTrue(output.contains("All clothes sorted by price:"));
+        assertTrue(firstIndex >= 0);
+        assertTrue(secondIndex > firstIndex);
+        assertTrue(thirdIndex > secondIndex);
     }
 
     @Test
