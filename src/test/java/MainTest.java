@@ -360,7 +360,7 @@ class MainTest {
     }
 
     @Test
-    void shouldModifySelectedClothesOnlyInMemory() throws IOException {
+    void shouldModifySelectedClothesInMemoryAndFile() throws IOException {
         Path storageFile = Files.createTempFile("clothes-main-modify", ".txt");
         Files.writeString(
                 storageFile,
@@ -384,7 +384,7 @@ class MainTest {
         assertTrue(output.contains("Clothes updated successfully."));
         assertTrue(output.contains("Pants: name='502'"));
         assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8)
-                .contains("Pants;501;M;2499.99;Denim;82.0"));
+                .contains("Pants;502;M;2499.99;Denim;82.0"));
     }
 
     private static String runMainAndCaptureOutput(String stdin, Path storageFile) {

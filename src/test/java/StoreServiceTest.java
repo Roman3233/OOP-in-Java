@@ -80,7 +80,7 @@ class StoreServiceTest {
     }
 
     @Test
-    void shouldUpdateClothesInStoreWithoutChangingFile() throws IOException {
+    void shouldUpdateClothesInStoreAndFile() throws IOException {
         Path storageFile = Files.createTempFile("store-service-update", ".txt");
         Files.writeString(
                 storageFile,
@@ -100,7 +100,7 @@ class StoreServiceTest {
         assertTrue(updated);
         assertEquals(List.of(updatedPants), storeService.getAllClothes());
         assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8)
-                .contains("Pants;501;M;2499.99;Denim;82.0"));
+                .contains("Pants;502;M;2499.99;Denim;82.0"));
     }
 
     @Test

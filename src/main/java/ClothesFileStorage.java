@@ -92,6 +92,33 @@ public class ClothesFileStorage {
         }
     }
 
+    public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
+        if (existingClothes == null) {
+            throw new IllegalArgumentException("Existing clothes cannot be null.");
+        }
+        if (newClothes == null) {
+            throw new IllegalArgumentException("New clothes cannot be null.");
+        }
+
+        List<Clothes> clothesList = loadClothes();
+        boolean updated = false;
+
+        for (int index = 0; index < clothesList.size(); index++) {
+            Clothes currentClothes = clothesList.get(index);
+            if (currentClothes.equals(existingClothes)) {
+                clothesList.set(index, newClothes);
+                updated = true;
+            }
+        }
+
+        if (!updated) {
+            return false;
+        }
+
+        overwriteClothes(clothesList);
+        return true;
+    }
+
     /**
      * Розбирає один рядок із файлу та створює відповідний об'єкт конкретного типу одягу.
      *
@@ -148,5 +175,29 @@ public class ClothesFileStorage {
         }
 
         return String.join(SEPARATOR, parts);
+    }
+
+    private void overwriteClothes(List<Clothes> clothesList) {
+        try {
+            Path parent = storagePath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            List<String> serializedClothes = new ArrayList<>();
+            for (Clothes clothes : clothesList) {
+                serializedClothes.add(serialize(clothes));
+            }
+
+            Files.write(
+                    storagePath,
+                    serializedClothes,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to update clothes in file: " + storagePath, e);
+        }
     }
 }

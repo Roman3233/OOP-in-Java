@@ -58,7 +58,23 @@ public class StoreService {
      * @return {@code true}, якщо оновлення виконано; інакше {@code false}
      */
     public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
-        return store.update(existingClothes, newClothes);
+        boolean updatedInStore = store.update(existingClothes, newClothes);
+        if (!updatedInStore) {
+            return false;
+        }
+
+        try {
+            boolean updatedInStorage = storage.updateClothes(existingClothes, newClothes);
+            if (!updatedInStorage) {
+                store.update(newClothes, existingClothes);
+                return false;
+            }
+
+            return true;
+        } catch (RuntimeException e) {
+            store.update(newClothes, existingClothes);
+            throw e;
+        }
     }
 
     /**
