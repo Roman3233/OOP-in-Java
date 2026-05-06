@@ -134,6 +134,19 @@ public class Store {
         return true;
     }
 
+    public boolean delete(Clothes existingObject) {
+        if (existingObject == null) {
+            throw new IllegalArgumentException("Existing clothes object cannot be null.");
+        }
+
+        if (!quantities.containsKey(existingObject)) {
+            return false;
+        }
+
+        quantities.remove(existingObject);
+        return true;
+    }
+
     /**
      * Пошук одягу за назвою (частковий збіг, без урахування регістру).
      *

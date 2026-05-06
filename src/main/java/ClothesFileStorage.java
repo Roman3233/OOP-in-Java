@@ -119,6 +119,32 @@ public class ClothesFileStorage {
         return true;
     }
 
+    public boolean deleteClothes(Clothes existingClothes) {
+        if (existingClothes == null) {
+            throw new IllegalArgumentException("Existing clothes cannot be null.");
+        }
+
+        List<Clothes> clothesList = loadClothes();
+        List<Clothes> remainingClothes = new ArrayList<>();
+        boolean deleted = false;
+
+        for (Clothes clothes : clothesList) {
+            if (clothes.equals(existingClothes)) {
+                deleted = true;
+                continue;
+            }
+
+            remainingClothes.add(clothes);
+        }
+
+        if (!deleted) {
+            return false;
+        }
+
+        overwriteClothes(remainingClothes);
+        return true;
+    }
+
     /**
      * Розбирає один рядок із файлу та створює відповідний об'єкт конкретного типу одягу.
      *

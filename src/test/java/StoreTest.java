@@ -87,6 +87,31 @@ class StoreTest {
     }
 
     @Test
+    void shouldDeleteExistingClothes() {
+        Store store = new Store("My store");
+        Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        Hat hat = new Hat("Safari", Size.L, 899.99, "Cotton", 9);
+
+        store.addNewClothes(pants, 2);
+        store.addNewClothes(hat, 1);
+
+        boolean deleted = store.delete(pants);
+
+        assertTrue(deleted);
+        assertEquals(0, store.getQuantity(pants));
+        assertEquals(List.of(hat), store.getClothes());
+    }
+
+    @Test
+    void shouldReturnFalseWhenDeletingMissingClothes() {
+        Store store = new Store("My store");
+
+        boolean deleted = store.delete(new Pants("501", Size.M, 2499.99, "Denim", 82));
+
+        assertFalse(deleted);
+    }
+
+    @Test
     void shouldRejectInvalidArguments() {
         Store store = new Store("My store");
         Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
@@ -96,6 +121,7 @@ class StoreTest {
         assertThrows(IllegalArgumentException.class, () -> store.addNewClothes(pants, 0));
         assertThrows(IllegalArgumentException.class, () -> store.update(null, pants));
         assertThrows(IllegalArgumentException.class, () -> store.update(pants, null));
+        assertThrows(IllegalArgumentException.class, () -> store.delete(null));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesByName(" "));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesBySize(null));
         assertThrows(IllegalArgumentException.class, () -> store.findClothesByMaterial(null));

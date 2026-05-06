@@ -77,6 +77,27 @@ public class StoreService {
         }
     }
 
+    public boolean deleteClothes(Clothes existingClothes) {
+        int quantityBeforeDeletion = store.getQuantity(existingClothes);
+        boolean deletedFromStore = store.delete(existingClothes);
+        if (!deletedFromStore) {
+            return false;
+        }
+
+        try {
+            boolean deletedFromStorage = storage.deleteClothes(existingClothes);
+            if (!deletedFromStorage) {
+                store.addNewClothes(existingClothes, quantityBeforeDeletion);
+                return false;
+            }
+
+            return true;
+        } catch (RuntimeException e) {
+            store.addNewClothes(existingClothes, quantityBeforeDeletion);
+            throw e;
+        }
+    }
+
     /**
      * Повертає всі унікальні позиції одягу у магазині.
      *

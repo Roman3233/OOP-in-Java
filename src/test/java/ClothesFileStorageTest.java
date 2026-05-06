@@ -75,4 +75,27 @@ class ClothesFileStorageTest {
         assertTrue(!content.contains("Pants;501;M;2499.99;Denim;82.0"));
         assertTrue(content.contains("Hat;Safari;M;899.99;Cotton;9.0"));
     }
+
+    @Test
+    void shouldDeleteMatchingClothesFromFile() throws IOException {
+        Path storageFile = Files.createTempFile("clothes-storage-delete", ".txt");
+        Files.writeString(
+                storageFile,
+                String.join(System.lineSeparator(),
+                        "Pants;501;M;2499.99;Denim;82.0",
+                        "Pants;501;M;2499.99;Denim;82.0",
+                        "Hat;Safari;M;899.99;Cotton;9.0"
+                ) + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        ClothesFileStorage storage = new ClothesFileStorage(storageFile.toString());
+        boolean deleted = storage.deleteClothes(new Pants("501", Size.M, 2499.99, "Denim", 82));
+
+        String content = Files.readString(storageFile, StandardCharsets.UTF_8);
+
+        assertTrue(deleted);
+        assertTrue(!content.contains("Pants;501;M;2499.99;Denim;82.0"));
+        assertTrue(content.contains("Hat;Safari;M;899.99;Cotton;9.0"));
+    }
 }
