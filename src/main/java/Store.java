@@ -94,6 +94,67 @@ public class Store {
     }
 
     /**
+     * Оновлює наявний об'єкт одягу в колекції.
+     *
+     * @param existingObject об'єкт, який потрібно знайти
+     * @param newObject новий стан об'єкта
+     * @return {@code true}, якщо оновлення виконано; інакше {@code false}
+     * @throws IllegalArgumentException якщо будь-який аргумент дорівнює {@code null}
+     */
+    public boolean update(Clothes existingObject, Clothes newObject) {
+        if (existingObject == null) {
+            throw new IllegalArgumentException("Existing clothes object cannot be null.");
+        }
+        if (newObject == null) {
+            throw new IllegalArgumentException("New clothes object cannot be null.");
+        }
+
+        LinkedHashMap<Clothes, Integer> updatedQuantities = new LinkedHashMap<>();
+        boolean updated = false;
+
+        for (Map.Entry<Clothes, Integer> entry : quantities.entrySet()) {
+            Clothes currentObject = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            if (!updated && currentObject.equals(existingObject)) {
+                updated = true;
+                updatedQuantities.put(newObject, updatedQuantities.getOrDefault(newObject, 0) + quantity);
+                continue;
+            }
+
+            updatedQuantities.put(currentObject, updatedQuantities.getOrDefault(currentObject, 0) + quantity);
+        }
+
+        if (!updated) {
+            return false;
+        }
+
+        quantities.clear();
+        quantities.putAll(updatedQuantities);
+        return true;
+    }
+
+    /**
+     * Видаляє наявний об'єкт одягу з колекції магазину.
+     *
+     * @param existingObject об'єкт, який потрібно знайти та видалити
+     * @return {@code true}, якщо видалення виконано; інакше {@code false}
+     * @throws IllegalArgumentException якщо {@code existingObject} дорівнює {@code null}
+     */
+    public boolean delete(Clothes existingObject) {
+        if (existingObject == null) {
+            throw new IllegalArgumentException("Existing clothes object cannot be null.");
+        }
+
+        if (!quantities.containsKey(existingObject)) {
+            return false;
+        }
+
+        quantities.remove(existingObject);
+        return true;
+    }
+
+    /**
      * Пошук одягу за назвою (частковий збіг, без урахування регістру).
      *
      * @param query рядок пошуку

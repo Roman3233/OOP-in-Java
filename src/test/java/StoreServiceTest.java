@@ -9,6 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StoreServiceTest {
@@ -77,6 +78,68 @@ class StoreServiceTest {
         List<Clothes> sortedClothes = storeService.getAllClothesSorted();
 
         assertIterableEquals(List.of(alpha, bravo, zulu), sortedClothes);
+    }
+
+    @Test
+    void shouldUpdateClothesInStoreAndFile() throws IOException {
+        Path storageFile = Files.createTempFile("store-service-update", ".txt");
+        Files.writeString(
+                storageFile,
+                "Pants;501;M;2499.99;Denim;82.0" + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        Store store = new Store("My store");
+        StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
+        storeService.loadFromStorage();
+
+        Pants existingPants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        Pants updatedPants = new Pants("502", Size.M, 2499.99, "Denim", 82);
+
+        boolean updated = storeService.updateClothes(existingPants, updatedPants);
+
+        assertTrue(updated);
+        assertEquals(List.of(updatedPants), storeService.getAllClothes());
+        assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8)
+                .contains("Pants;502;M;2499.99;Denim;82.0"));
+    }
+
+    @Test
+    void shouldDeleteClothesFromStoreAndFile() throws IOException {
+        Path storageFile = Files.createTempFile("store-service-delete", ".txt");
+        Files.writeString(
+                storageFile,
+                String.join(System.lineSeparator(),
+                        "Pants;501;M;2499.99;Denim;82.0",
+                        "Hat;Safari;M;899.99;Cotton;9.0"
+                ) + System.lineSeparator(),
+                StandardCharsets.UTF_8
+        );
+
+        Store store = new Store("My store");
+        StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
+        storeService.loadFromStorage();
+
+        Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
+        boolean deleted = storeService.deleteClothes(pants);
+
+        assertTrue(deleted);
+        assertEquals(1, storeService.getAllClothes().size());
+        assertTrue(Files.readString(storageFile, StandardCharsets.UTF_8)
+                .contains("Hat;Safari;M;899.99;Cotton;9.0"));
+        assertTrue(!Files.readString(storageFile, StandardCharsets.UTF_8)
+                .contains("Pants;501;M;2499.99;Denim;82.0"));
+    }
+
+    @Test
+    void shouldReturnFalseWhenDeletingMissingClothesFromStoreMemory() throws IOException {
+        Path storageFile = Files.createTempFile("store-service-delete-missing", ".txt");
+        Store store = new Store("My store");
+        StoreService storeService = new StoreService(store, new ClothesFileStorage(storageFile.toString()));
+
+        boolean deleted = storeService.deleteClothes(new Pants("501", Size.M, 2499.99, "Denim", 82));
+
+        assertFalse(deleted);
     }
 
     @Test

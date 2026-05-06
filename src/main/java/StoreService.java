@@ -51,6 +51,67 @@ public class StoreService {
     }
 
     /**
+     * Оновлює об'єкт одягу в магазині лише в пам'яті.
+     *
+     * @param existingClothes поточний об'єкт
+     * @param newClothes новий стан об'єкта
+     * @return {@code true}, якщо оновлення виконано; інакше {@code false}
+     */
+    /**
+     * Оновлює об'єкт одягу в магазині та синхронізує зміну з файловим сховищем.
+     *
+     * @param existingClothes поточний об'єкт
+     * @param newClothes новий стан об'єкта
+     * @return {@code true}, якщо оновлення виконано; інакше {@code false}
+     */
+    public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
+        boolean updatedInStore = store.update(existingClothes, newClothes);
+        if (!updatedInStore) {
+            return false;
+        }
+
+        try {
+            boolean updatedInStorage = storage.updateClothes(existingClothes, newClothes);
+            if (!updatedInStorage) {
+                store.update(newClothes, existingClothes);
+                return false;
+            }
+
+            return true;
+        } catch (RuntimeException e) {
+            store.update(newClothes, existingClothes);
+            throw e;
+        }
+    }
+
+    /**
+     * Видаляє об'єкт одягу з магазину та файлового сховища.
+     *
+     * @param existingClothes об'єкт, який потрібно видалити
+     * @return {@code true}, якщо видалення виконано; інакше {@code false}
+     */
+    public boolean deleteClothes(Clothes existingClothes) {
+        int quantityBeforeDeletion = store.getQuantity(existingClothes);
+        boolean deletedFromStore = store.delete(existingClothes);
+        if (!deletedFromStore) {
+            return false;
+        }
+
+        try {
+            boolean deletedFromStorage = storage.deleteClothes(existingClothes);
+            if (!deletedFromStorage) {
+                store.addNewClothes(existingClothes, quantityBeforeDeletion);
+                return false;
+            }
+
+            return true;
+        } catch (RuntimeException e) {
+            store.addNewClothes(existingClothes, quantityBeforeDeletion);
+            throw e;
+        }
+    }
+
+    /**
      * Повертає всі унікальні позиції одягу у магазині.
      *
      * @return список одягу

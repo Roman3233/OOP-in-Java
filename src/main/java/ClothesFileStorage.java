@@ -93,6 +93,74 @@ public class ClothesFileStorage {
     }
 
     /**
+     * Оновлює всі записи у файлі, що відповідають вказаному об'єкту одягу.
+     *
+     * @param existingClothes поточний об'єкт
+     * @param newClothes новий стан об'єкта
+     * @return {@code true}, якщо хоча б один запис оновлено; інакше {@code false}
+     * @throws IllegalArgumentException якщо будь-який аргумент дорівнює {@code null}
+     */
+    public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
+        if (existingClothes == null) {
+            throw new IllegalArgumentException("Existing clothes cannot be null.");
+        }
+        if (newClothes == null) {
+            throw new IllegalArgumentException("New clothes cannot be null.");
+        }
+
+        List<Clothes> clothesList = loadClothes();
+        boolean updated = false;
+
+        for (int index = 0; index < clothesList.size(); index++) {
+            Clothes currentClothes = clothesList.get(index);
+            if (currentClothes.equals(existingClothes)) {
+                clothesList.set(index, newClothes);
+                updated = true;
+            }
+        }
+
+        if (!updated) {
+            return false;
+        }
+
+        overwriteClothes(clothesList);
+        return true;
+    }
+
+    /**
+     * Видаляє всі записи у файлі, що відповідають вказаному об'єкту одягу.
+     *
+     * @param existingClothes об'єкт, який потрібно видалити
+     * @return {@code true}, якщо хоча б один запис видалено; інакше {@code false}
+     * @throws IllegalArgumentException якщо {@code existingClothes} дорівнює {@code null}
+     */
+    public boolean deleteClothes(Clothes existingClothes) {
+        if (existingClothes == null) {
+            throw new IllegalArgumentException("Existing clothes cannot be null.");
+        }
+
+        List<Clothes> clothesList = loadClothes();
+        List<Clothes> remainingClothes = new ArrayList<>();
+        boolean deleted = false;
+
+        for (Clothes clothes : clothesList) {
+            if (clothes.equals(existingClothes)) {
+                deleted = true;
+                continue;
+            }
+
+            remainingClothes.add(clothes);
+        }
+
+        if (!deleted) {
+            return false;
+        }
+
+        overwriteClothes(remainingClothes);
+        return true;
+    }
+
+    /**
      * Розбирає один рядок із файлу та створює відповідний об'єкт конкретного типу одягу.
      *
      * @param line рядок із серіалізованими даними
@@ -148,5 +216,35 @@ public class ClothesFileStorage {
         }
 
         return String.join(SEPARATOR, parts);
+    }
+
+    /**
+     * Повністю переписує файл переданим списком одягу.
+     *
+     * @param clothesList список об'єктів для збереження
+     * @throws IllegalStateException якщо не вдалося переписати файл
+     */
+    private void overwriteClothes(List<Clothes> clothesList) {
+        try {
+            Path parent = storagePath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+
+            List<String> serializedClothes = new ArrayList<>();
+            for (Clothes clothes : clothesList) {
+                serializedClothes.add(serialize(clothes));
+            }
+
+            Files.write(
+                    storagePath,
+                    serializedClothes,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to update clothes in file: " + storagePath, e);
+        }
     }
 }
