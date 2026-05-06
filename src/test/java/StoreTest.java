@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -75,14 +74,12 @@ class StoreTest {
     }
 
     @Test
-    void shouldReturnFalseWhenUpdatingMissingClothes() {
+    void shouldThrowObjectNotFoundExceptionWhenUpdatingMissingClothes() {
         Store store = new Store("My store");
         Pants originalPants = new Pants("501", Size.M, 2499.99, "Denim", 82);
         Pants updatedPants = new Pants("502", Size.M, 2499.99, "Denim", 82);
 
-        boolean updated = store.update(originalPants, updatedPants);
-
-        assertFalse(updated);
+        assertThrows(ObjectNotFoundException.class, () -> store.update(originalPants, updatedPants));
         assertTrue(store.getClothes().isEmpty());
     }
 
@@ -103,28 +100,27 @@ class StoreTest {
     }
 
     @Test
-    void shouldReturnFalseWhenDeletingMissingClothes() {
+    void shouldThrowObjectNotFoundExceptionWhenDeletingMissingClothes() {
         Store store = new Store("My store");
 
-        boolean deleted = store.delete(new Pants("501", Size.M, 2499.99, "Denim", 82));
-
-        assertFalse(deleted);
+        assertThrows(ObjectNotFoundException.class,
+                () -> store.delete(new Pants("501", Size.M, 2499.99, "Denim", 82)));
     }
 
     @Test
-    void shouldRejectInvalidArguments() {
+    void shouldThrowInvalidFieldValueExceptionWhenArgumentsAreInvalid() {
         Store store = new Store("My store");
         Pants pants = new Pants("501", Size.M, 2499.99, "Denim", 82);
 
-        assertThrows(IllegalArgumentException.class, () -> new Store(" "));
-        assertThrows(IllegalArgumentException.class, () -> store.addNewClothes(null, 1));
-        assertThrows(IllegalArgumentException.class, () -> store.addNewClothes(pants, 0));
-        assertThrows(IllegalArgumentException.class, () -> store.update(null, pants));
-        assertThrows(IllegalArgumentException.class, () -> store.update(pants, null));
-        assertThrows(IllegalArgumentException.class, () -> store.delete(null));
-        assertThrows(IllegalArgumentException.class, () -> store.findClothesByName(" "));
-        assertThrows(IllegalArgumentException.class, () -> store.findClothesBySize(null));
-        assertThrows(IllegalArgumentException.class, () -> store.findClothesByMaterial(null));
-        assertThrows(IllegalArgumentException.class, () -> store.findClothesByMaximumPrice(0));
+        assertThrows(InvalidFieldValueException.class, () -> new Store(" "));
+        assertThrows(InvalidFieldValueException.class, () -> store.addNewClothes(null, 1));
+        assertThrows(InvalidFieldValueException.class, () -> store.addNewClothes(pants, 0));
+        assertThrows(InvalidFieldValueException.class, () -> store.update(null, pants));
+        assertThrows(InvalidFieldValueException.class, () -> store.update(pants, null));
+        assertThrows(InvalidFieldValueException.class, () -> store.delete(null));
+        assertThrows(InvalidFieldValueException.class, () -> store.findClothesByName(" "));
+        assertThrows(InvalidFieldValueException.class, () -> store.findClothesBySize(null));
+        assertThrows(InvalidFieldValueException.class, () -> store.findClothesByMaterial(null));
+        assertThrows(InvalidFieldValueException.class, () -> store.findClothesByMaximumPrice(0));
     }
 }
