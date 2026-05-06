@@ -40,7 +40,7 @@ public class Shirts extends Clothes {
      */
     public void setSleeveLength(double sleeveLength) {
         if (sleeveLength <= 0) {
-            throw new IllegalArgumentException("Sleeve length must be greater than 0.");
+            throw new InvalidFieldValueException("Sleeve length must be greater than 0.");
         }
         this.sleeveLength = sleeveLength;
     }

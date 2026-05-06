@@ -81,7 +81,7 @@ public abstract class Clothes implements Comparable<Clothes> {
      */
     public void setSize(Size size) {
         if (size == null) {
-            throw new IllegalArgumentException("Size cannot be null.");
+            throw new InvalidFieldValueException("Size cannot be null.");
         }
         this.size = size;
     }
@@ -94,7 +94,7 @@ public abstract class Clothes implements Comparable<Clothes> {
      */
     public void setPrice(double price) {
         if (price <= 0) {
-            throw new IllegalArgumentException("Price must be greater than 0.");
+            throw new InvalidFieldValueException("Price must be greater than 0.");
         }
         this.price = price;
     }
@@ -127,7 +127,7 @@ public abstract class Clothes implements Comparable<Clothes> {
     @Override
     public int compareTo(Clothes other) {
         if (other == null) {
-            throw new IllegalArgumentException("Compared clothes cannot be null.");
+            throw new InvalidFieldValueException("Compared clothes cannot be null.");
         }
 
         int nameComparison = name.compareTo(other.name);
@@ -189,12 +189,12 @@ public abstract class Clothes implements Comparable<Clothes> {
 
     private String validateTextField(String value, String fieldName) {
         if (value == null) {
-            throw new IllegalArgumentException(fieldName + " cannot be null.");
+            throw new InvalidFieldValueException(fieldName + " cannot be null.");
         }
 
         String trimmedValue = value.trim();
         if (trimmedValue.isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " cannot be empty.");
+            throw new InvalidFieldValueException(fieldName + " cannot be empty.");
         }
 
         return trimmedValue;

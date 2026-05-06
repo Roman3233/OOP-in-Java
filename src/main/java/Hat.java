@@ -40,7 +40,7 @@ public class Hat extends Clothes {
      */
     public void setBrimWidth(double brimWidth) {
         if (brimWidth <= 0) {
-            throw new IllegalArgumentException("Brim width must be greater than 0.");
+            throw new InvalidFieldValueException("Brim width must be greater than 0.");
         }
         this.brimWidth = brimWidth;
     }

@@ -28,31 +28,36 @@ public class Main {
             printMainMenu();
             int choice = readMainMenuChoice(scanner);
 
-            switch (choice) {
-                case 1:
-                    searchClothesFromSubmenu(scanner, storeService);
-                    break;
-                case 2:
-                    createClothesFromSubmenu(scanner, storeService);
-                    break;
-                case 3:
-                    modifyClothes(scanner, storeService);
-                    break;
-                case 4:
-                    deleteClothes(scanner, storeService);
-                    break;
-                case 5:
-                    printAllClothes(storeService);
-                    break;
-                case 6:
-                    printSortedClothesFromSubmenu(scanner, storeService);
-                    break;
-                case 7:
-                    running = false;
-                    System.out.println("Program finished.");
-                    break;
-                default:
-                    System.out.println("Error: unknown menu option.");
+            try {
+                switch (choice) {
+                    case 1:
+                        searchClothesFromSubmenu(scanner, storeService);
+                        break;
+                    case 2:
+                        createClothesFromSubmenu(scanner, storeService);
+                        break;
+                    case 3:
+                        modifyClothes(scanner, storeService);
+                        break;
+                    case 4:
+                        deleteClothes(scanner, storeService);
+                        break;
+                    case 5:
+                        printAllClothes(storeService);
+                        break;
+                    case 6:
+                        printSortedClothesFromSubmenu(scanner, storeService);
+                        break;
+                    case 7:
+                        running = false;
+                        System.out.println("Program finished.");
+                        break;
+                    default:
+                        System.out.println("Error: unknown menu option.");
+                }
+            } catch (InvalidFieldValueException | ObjectNotFoundException e) {
+                System.out.println("Error: " + e.getMessage());
+                System.out.println("Returning to main menu.");
             }
         }
 
@@ -201,8 +206,6 @@ public class Main {
 
         if (updated) {
             System.out.println("Clothes updated successfully.");
-        } else {
-            System.out.println("Error: clothes object was not found.");
         }
     }
 
@@ -217,8 +220,6 @@ public class Main {
         boolean deleted = storeService.deleteClothes(selectedClothes);
         if (deleted) {
             System.out.println("Clothes deleted successfully.");
-        } else {
-            System.out.println("Error: clothes object was not found.");
         }
     }
 
