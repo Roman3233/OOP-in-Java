@@ -57,6 +57,13 @@ public class StoreService {
      * @param newClothes новий стан об'єкта
      * @return {@code true}, якщо оновлення виконано; інакше {@code false}
      */
+    /**
+     * Оновлює об'єкт одягу в магазині та синхронізує зміну з файловим сховищем.
+     *
+     * @param existingClothes поточний об'єкт
+     * @param newClothes новий стан об'єкта
+     * @return {@code true}, якщо оновлення виконано; інакше {@code false}
+     */
     public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
         boolean updatedInStore = store.update(existingClothes, newClothes);
         if (!updatedInStore) {
@@ -77,6 +84,12 @@ public class StoreService {
         }
     }
 
+    /**
+     * Видаляє об'єкт одягу з магазину та файлового сховища.
+     *
+     * @param existingClothes об'єкт, який потрібно видалити
+     * @return {@code true}, якщо видалення виконано; інакше {@code false}
+     */
     public boolean deleteClothes(Clothes existingClothes) {
         int quantityBeforeDeletion = store.getQuantity(existingClothes);
         boolean deletedFromStore = store.delete(existingClothes);

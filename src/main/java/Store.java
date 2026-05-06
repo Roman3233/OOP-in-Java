@@ -134,6 +134,13 @@ public class Store {
         return true;
     }
 
+    /**
+     * Видаляє наявний об'єкт одягу з колекції магазину.
+     *
+     * @param existingObject об'єкт, який потрібно знайти та видалити
+     * @return {@code true}, якщо видалення виконано; інакше {@code false}
+     * @throws IllegalArgumentException якщо {@code existingObject} дорівнює {@code null}
+     */
     public boolean delete(Clothes existingObject) {
         if (existingObject == null) {
             throw new IllegalArgumentException("Existing clothes object cannot be null.");

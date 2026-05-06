@@ -92,6 +92,14 @@ public class ClothesFileStorage {
         }
     }
 
+    /**
+     * Оновлює всі записи у файлі, що відповідають вказаному об'єкту одягу.
+     *
+     * @param existingClothes поточний об'єкт
+     * @param newClothes новий стан об'єкта
+     * @return {@code true}, якщо хоча б один запис оновлено; інакше {@code false}
+     * @throws IllegalArgumentException якщо будь-який аргумент дорівнює {@code null}
+     */
     public boolean updateClothes(Clothes existingClothes, Clothes newClothes) {
         if (existingClothes == null) {
             throw new IllegalArgumentException("Existing clothes cannot be null.");
@@ -119,6 +127,13 @@ public class ClothesFileStorage {
         return true;
     }
 
+    /**
+     * Видаляє всі записи у файлі, що відповідають вказаному об'єкту одягу.
+     *
+     * @param existingClothes об'єкт, який потрібно видалити
+     * @return {@code true}, якщо хоча б один запис видалено; інакше {@code false}
+     * @throws IllegalArgumentException якщо {@code existingClothes} дорівнює {@code null}
+     */
     public boolean deleteClothes(Clothes existingClothes) {
         if (existingClothes == null) {
             throw new IllegalArgumentException("Existing clothes cannot be null.");
@@ -203,6 +218,12 @@ public class ClothesFileStorage {
         return String.join(SEPARATOR, parts);
     }
 
+    /**
+     * Повністю переписує файл переданим списком одягу.
+     *
+     * @param clothesList список об'єктів для збереження
+     * @throws IllegalStateException якщо не вдалося переписати файл
+     */
     private void overwriteClothes(List<Clothes> clothesList) {
         try {
             Path parent = storagePath.getParent();
